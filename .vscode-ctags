@@ -1,0 +1,28 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	//
+$(CLIENT_EXE)	src/Makefile	/^$(CLIENT_EXE): $(CLIENT_OBJ)$/;"	t
+$(CLIENT_OBJ)	src/Makefile	/^$(CLIENT_OBJ): $(CLIENT_SRC)$/;"	t
+$(SERVER_EXE)	src/Makefile	/^$(SERVER_EXE): $(SERVER_OBJ)$/;"	t
+$(SERVER_OBJ)	src/Makefile	/^$(SERVER_OBJ): $(SERVER_SRC)$/;"	t
+BULID_DIR	src/Makefile	/^BULID_DIR=..\/build$/;"	m
+CLIENT_EXE	src/Makefile	/^CLIENT_EXE=..\/build\/client$/;"	m
+CLIENT_OBJ	src/Makefile	/^CLIENT_OBJ=$(CLIENT_SRC:.cpp=.o)$/;"	m
+CXX	src/Makefile	/^CXX=g++$/;"	m
+InetAddress	include/InetAddress.h	/^    InetAddress(const std::string &ip, uint16_t port)$/;"	f	class:InetAddress
+InetAddress	include/InetAddress.h	/^class InetAddress$/;"	c
+SERVER_EXE	src/Makefile	/^SERVER_EXE=..\/build\/server$/;"	m
+SERVER_OBJ	src/Makefile	/^SERVER_OBJ=$(SERVER_SRC:.cpp=.o)$/;"	m
+SERVER_SRC	src/Makefile	/^SERVER_SRC=tcpepoll.cpp$/;"	m
+_INETADDRESS_H_	include/InetAddress.h	/^#define _INETADDRESS_H_$/;"	d
+addr_	include/InetAddress.h	/^    struct sockaddr_in addr_;$/;"	m	class:InetAddress	typeref:struct:sockaddr_in
+all	src/Makefile	/^all: $(CLIENT_EXE) $(SERVER_EXE)$/;"	t
+clean	src/Makefile	/^clean:$/;"	t
+getSockAddrInet	include/InetAddress.h	/^    struct sockaddr_in *getSockAddrInet()$/;"	f	class:InetAddress	typeref:struct:sockaddr_in *
+main	src/client.cpp	/^int main(int argc, char *argv[])$/;"	f	typeref:typename:int
+main	src/tcpepoll.cpp	/^int main(int argc, char const *argv[])$/;"	f	typeref:typename:int
+socketInit	src/tcpepoll.cpp	/^int socketInit()$/;"	f	typeref:typename:int

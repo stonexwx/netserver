@@ -3,33 +3,30 @@ CXX=g++
 
 # 定义源文件和目标文件
 CLIENT_SRC=client.cpp
-SERVER_SRC=tcpepoll.cpp
+SERVER_SRC=tcpepoll.cpp InetAddress.cpp
 CLIENT_OBJ=$(CLIENT_SRC:.cpp=.o)
 SERVER_OBJ=$(SERVER_SRC:.cpp=.o)
-BULID_DIR=../build
-CLIENT_EXE=../build/client
-SERVER_EXE=../build/server
+BUILD_DIR=../build
+CLIENT_EXE=$(BUILD_DIR)/client
+SERVER_EXE=$(BUILD_DIR)/server
 
 # 默认目标
 all: $(CLIENT_EXE) $(SERVER_EXE)
 
-# 如何从 client.cpp 生成 client.o
-$(CLIENT_OBJ): $(CLIENT_SRC)
-	$(CXX) -c $< -o $@
 
-# 如何从 tcpepoll.cpp 生成 server.o
-$(SERVER_OBJ): $(SERVER_SRC)
+# 如何从每个源文件生成对应的 .o 文件
+%.o: %.cpp
 	$(CXX) -c $< -o $@
 
 # 如何从 client.o 生成最终的 client 可执行文件
 $(CLIENT_EXE): $(CLIENT_OBJ)
-	mkdir -p $(BULID_DIR)
+	mkdir -p $(BUILD_DIR)
 	$(CXX) $(CLIENT_OBJ) -o $@
 	rm -f $(CLIENT_OBJ)
 
 # 如何从 server.o 生成最终的 server 可执行文件
 $(SERVER_EXE): $(SERVER_OBJ)
-	mkdir -p $(BULID_DIR)
+	mkdir -p $(BUILD_DIR)
 	$(CXX) $(SERVER_OBJ) -o $@
 	rm -f $(SERVER_OBJ)
 
