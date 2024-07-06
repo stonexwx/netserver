@@ -24,6 +24,9 @@ public:
     void tcpServerStart();
 
     void newConnection(Socket *clientSocket);
+
+    void closeConnection(Connection *conn);
+    void errorConnection(Connection *conn);
 };
 
 #endif

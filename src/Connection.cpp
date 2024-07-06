@@ -36,10 +36,22 @@ void Connection::closeCallback()
 {
     printf("client(eventfd=%d) disconnected.\n", getFd());
     close(getFd());
+    closeCallback_(this);
 }
 
 void Connection::errorCallback()
 {
     printf("client(eventfd=%d) error.\n", getFd());
     close(getFd());
+    errorCallback_(this);
+}
+
+void Connection::setCloseCallback(const std::function<void(Connection *)> &cb)
+{
+    closeCallback_ = cb;
+}
+
+void Connection::setErrorCallback(const std::function<void(Connection *)> &cb)
+{
+    errorCallback_ = cb;
 }

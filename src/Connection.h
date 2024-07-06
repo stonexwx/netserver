@@ -19,6 +19,9 @@ private:
     uint16_t clientPort_;
     int fd_;
 
+    std::function<void(Connection *)> closeCallback_;
+    std::function<void(Connection *)> errorCallback_;
+
 public:
     Connection(EventLoop *loop, Socket *clientSocket);
     ~Connection();
@@ -29,6 +32,9 @@ public:
 
     void closeCallback(); // 关闭回调函数
     void errorCallback(); // 错误回调函数
+
+    void setCloseCallback(const std::function<void(Connection *)> &cb);
+    void setErrorCallback(const std::function<void(Connection *)> &cb);
 };
 
 #endif

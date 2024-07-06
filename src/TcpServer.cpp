@@ -23,9 +23,34 @@ void TcpServer::tcpServerStart()
 void TcpServer::newConnection(Socket *clientSocket)
 {
     Connection *conn_ = new Connection(&loop_, clientSocket);
+
     printf("accept client(fd=%d,ip=%s,port=%d) ok.\n",
            conn_->getFd(),
            conn_->getClientIp().c_str(),
            conn_->getClientPort());
+
+    conn_->setCloseCallback(std::bind(&TcpServer::closeConnection, this, std::placeholders::_1));
+    conn_->setErrorCallback(std::bind(&TcpServer::errorConnection, this, std::placeholders::_1));
+
     connMap_[conn_->getFd()] = conn_;
+}
+
+void TcpServer::closeConnection(Connection *conn)
+{
+    auto iter = connMap_.find(conn->getFd());
+    if (iter != connMap_.end())
+    {
+        delete iter->second;
+        connMap_.erase(iter);
+    }
+}
+
+void TcpServer::errorConnection(Connection *conn)
+{
+    auto iter = connMap_.find(conn->getFd());
+    if (iter != connMap_.end())
+    {
+        delete iter->second;
+        connMap_.erase(iter);
+    }
 }
