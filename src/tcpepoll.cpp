@@ -25,7 +25,9 @@ int main(int argc, char const *argv[])
     socket.listen();
 
     Epoll epoll;
-    Channel *serveChannel = new Channel(&epoll, socket.getFd(), true);
+    Channel *serveChannel = new Channel(&epoll, socket.getFd());
+    serveChannel->setReadCallback([&]()
+                                  { serveChannel->newConnection(&socket); });
     serveChannel->enableReading();
     while (true) // 事件循环。
     {
@@ -33,7 +35,7 @@ int main(int argc, char const *argv[])
         // 如果infds>0，表示有事件发生的fd的数量。
         for (auto &channel : channels) // 遍历epoll返回的数组evs。
         {
-            channel->handleEvent(&socket); // 处理事件。
+            channel->handleEvent(); // 处理事件。
         }
     }
 

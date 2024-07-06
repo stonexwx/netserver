@@ -1,6 +1,8 @@
 #ifndef _CHANNEL_H_
 #define _CHANNEL_H_
 
+#include <functional>
+
 #include "Epoll.h"
 #include "InetAddress.h"
 #include "Socket.h"
@@ -15,10 +17,11 @@ private:
     bool inepoll_ = false; // 是否在epoll中
     uint32_t events_ = 0;  // 需要监听的事件
     uint32_t revents_ = 0; // 实际发生的事件
-    bool isListen_ = false;
+
+    function<void()> readCallback_; // 读回调函数
 
 public:
-    Channel(Epoll *ep, int fd, bool isListen = false);
+    Channel(Epoll *ep, int fd);
     ~Channel();
 
     int getFd() const;
@@ -30,7 +33,12 @@ public:
     uint32_t getEvents() const;        // 获取需要监听的事件
     uint32_t getRevents() const;       // 获取发生的事件
 
-    void handleEvent(Socket *serveSocket); // 处理事件
+    void handleEvent(); // 处理事件
+
+    void newConnection(Socket *serveSocket); // 新连接
+    void handleRead();                       // 读事件
+
+    void setReadCallback(const function<void()> &cb); // 设置读回调函数
 };
 
 #endif
