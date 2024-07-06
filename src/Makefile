@@ -3,7 +3,14 @@ CXX=g++
 CXXFLAGS=
 # 定义源文件和目标文件
 CLIENT_SRC=client.cpp
-SERVER_SRC=tcpepoll.cpp InetAddress.cpp Socket.cpp Epoll.cpp Channel.cpp EventLoop.cpp TcpServer.cpp
+SERVER_SRC=tcpepoll.cpp \
+	InetAddress.cpp \
+	Socket.cpp \
+	Epoll.cpp \
+	Channel.cpp \
+	EventLoop.cpp \
+	TcpServer.cpp \
+	Acceptor.cpp
 CLIENT_OBJ=$(CLIENT_SRC:.cpp=.o)
 SERVER_OBJ=$(SERVER_SRC:.cpp=.o)
 BUILD_DIR=../build

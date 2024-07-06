@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "EventLoop.h"
+#include "Acceptor.h"
 
 class EventLoop;
 
@@ -10,6 +11,7 @@ class TcpServer
 {
 private:
     EventLoop loop_;
+    Acceptor *acceptor_;
 
 public:
     TcpServer(const string &ip, const string &port);
