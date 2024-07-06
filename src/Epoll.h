@@ -8,7 +8,11 @@
 
 #include <string.h>
 
+#include "Channel.h"
+
 using namespace std;
+
+class Channel;
 
 class Epoll
 {
@@ -23,7 +27,9 @@ public:
     ~Epoll();
 
     void addfd(int fd, uint32_t op);
-    vector<struct epoll_event> loop(int timeout = -1);
+    void updateChannel(Channel *channel);
+    // vector<struct epoll_event> loop(int timeout = -1);
+    vector<Channel *> loop(int timeout = -1);
 };
 
 #endif

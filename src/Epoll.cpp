@@ -29,9 +29,33 @@ void Epoll::addfd(int fd, uint32_t op)
     }
 }
 
-vector<struct epoll_event> Epoll::loop(int timeout)
+void Epoll::updateChannel(Channel *channel)
 {
-    vector<struct epoll_event> ret;
+    struct epoll_event ev;
+    ev.data.ptr = channel;
+    ev.events = channel->getEvents();
+    if (channel->inpoll())
+    {
+        if (epoll_ctl(epoll_fd, EPOLL_CTL_MOD, channel->getFd(), &ev) == -1)
+        {
+            printf("%s:%s:%d,err:%s\n", __FILE__, __FUNCTION__, __LINE__, strerror(errno));
+            exit(1);
+        }
+    }
+    else
+    {
+        if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, channel->getFd(), &ev) == -1)
+        {
+            printf("%s:%s:%d,err:%s\n", __FILE__, __FUNCTION__, __LINE__, strerror(errno));
+            exit(1);
+        }
+        channel->setInEpoll();
+    }
+}
+
+vector<Channel *> Epoll::loop(int timeout)
+{
+    vector<Channel *> ret;
     bzero(events_, sizeof(events_));
     int nfds = epoll_wait(epoll_fd, events_, MAX_EVENTS, timeout);
     if (nfds < 0)
@@ -46,7 +70,9 @@ vector<struct epoll_event> Epoll::loop(int timeout)
     }
     for (int i = 0; i < nfds; i++)
     {
-        ret.push_back(events_[i]);
+        Channel *channel = static_cast<Channel *>(events_[i].data.ptr);
+        channel->setrevents(events_[i].events);
+        ret.push_back(channel);
     }
     return ret;
 }
