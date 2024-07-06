@@ -4,6 +4,7 @@
 #include "Socket.h"
 #include "Channel.h"
 #include "EventLoop.h"
+#include "Connection.h"
 
 class Socket;
 class Channel;
@@ -19,6 +20,8 @@ public:
              const string &ip,
              const string &port);
     ~Acceptor();
+
+    void newConnection();
 };
 
 #endif

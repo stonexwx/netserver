@@ -71,17 +71,6 @@ void Channel::handleEvent()
     }
 }
 
-void Channel::newConnection(Socket *serveSocket)
-{
-    InetAddress clientaddr;
-    Socket *clientfd = new Socket(serveSocket->accept(clientaddr)); // 接受新的客户端连接。
-
-    printf("accept client(fd=%d,ip=%s,port=%d) ok.\n", clientfd->getFd(), clientaddr.getIp(), clientaddr.getPort());
-
-    // 为新客户端连接准备读事件，并添加到epoll中。
-    Connection *conn = new Connection(loop_, clientfd);
-}
-
 void Channel::handleRead()
 {
     char buffer[1024];

@@ -34,8 +34,7 @@ public:
 
     void handleEvent(); // 处理事件
 
-    void newConnection(Socket *serveSocket); // 新连接
-    void handleRead();                       // 读事件
+    void handleRead(); // 读事件
 
     void setReadCallback(const function<void()> &cb); // 设置读回调函数
 };
