@@ -2,6 +2,8 @@
 #define _CHANNEL_H_
 
 #include "Epoll.h"
+#include "InetAddress.h"
+#include "Socket.h"
 
 class Epoll;
 
@@ -13,9 +15,10 @@ private:
     bool inepoll_ = false; // 是否在epoll中
     uint32_t events_ = 0;  // 需要监听的事件
     uint32_t revents_ = 0; // 实际发生的事件
+    bool isListen_ = false;
 
 public:
-    Channel(Epoll *ep, int fd);
+    Channel(Epoll *ep, int fd, bool isListen = false);
     ~Channel();
 
     int getFd() const;
@@ -26,6 +29,8 @@ public:
     bool inpoll() const;               // 是否在epoll中
     uint32_t getEvents() const;        // 获取需要监听的事件
     uint32_t getRevents() const;       // 获取发生的事件
+
+    void handleEvent(Socket *serveSocket); // 处理事件
 };
 
 #endif
