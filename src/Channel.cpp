@@ -54,8 +54,7 @@ void Channel::handleEvent()
 
     if (getRevents() & EPOLLRDHUP) // 对方已关闭，有些系统检测不到，可以使用EPOLLIN，recv()返回0。
     {
-        printf("client(eventfd=%d) disconnected.\n", fd_);
-        close(fd_); // 关闭客户端的fd。
+        closeCallback_();
     } //  普通数据  带外数据
     else if (getRevents() & (EPOLLIN | EPOLLPRI)) // 接收缓冲区中有数据可以读。
     {
@@ -66,8 +65,7 @@ void Channel::handleEvent()
     }
     else // 其它事件，都视为错误。
     {
-        printf("client(eventfd=%d) error.\n", fd_);
-        close(fd_); // 关闭客户端的fd。
+        errorCallback_();
     }
 }
 
@@ -94,8 +92,7 @@ void Channel::handleRead()
         }
         else if (nread == 0) // 客户端连接已断开。
         {
-            printf("client(eventfd=%d) disconnected.\n", fd_);
-            close(fd_); // 关闭客户端的fd。
+            closeCallback_();
             break;
         }
     }
@@ -104,4 +101,14 @@ void Channel::handleRead()
 void Channel::setReadCallback(const function<void()> &cb)
 {
     readCallback_ = cb;
+}
+
+void Channel::setCloseCallback(const function<void()> &cb)
+{
+    closeCallback_ = cb;
+}
+
+void Channel::setErrorCallback(const function<void()> &cb)
+{
+    errorCallback_ = cb;
 }

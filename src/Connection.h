@@ -26,6 +26,9 @@ public:
     string getClientIp() const;
     uint16_t getClientPort() const;
     int getFd() const;
+
+    void closeCallback(); // 关闭回调函数
+    void errorCallback(); // 错误回调函数
 };
 
 #endif
