@@ -5,7 +5,6 @@
 #include <netinet/tcp.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <sys/epoll.h>
 #include <string.h>
 
 #include "InetAddress.h"
