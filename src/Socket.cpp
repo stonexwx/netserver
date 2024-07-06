@@ -13,6 +13,7 @@ int createNonblockingOrDie()
 
 Socket::Socket(int fd) : sockfd_(fd)
 {
+    printf("Socket::Socket(int fd) : sockfd_(fd) : fd=%d\n", fd);
 }
 
 Socket::~Socket()
@@ -71,12 +72,13 @@ void Socket::listen(int nn)
 
 int Socket::accept(InetAddress &clientaddr)
 {
+    printf("fd:%d\n", sockfd_);
     struct sockaddr_in addr;
     socklen_t len = sizeof(addr);
     int connfd = ::accept4(sockfd_, (sockaddr *)&addr, &len, SOCK_NONBLOCK | SOCK_CLOEXEC);
     if (connfd < 0)
     {
-        printf("%s : %s : %d,accept() failed", __FILE__, __func__, __LINE__);
+        printf("%s : %s : %d,accept() failed:%s\n", __FILE__, __func__, __LINE__, strerror(errno));
         close(sockfd_);
         exit(1);
     }
