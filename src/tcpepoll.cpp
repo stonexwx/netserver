@@ -2,6 +2,7 @@
 
 #include "Socket.h"
 #include "Epoll.h"
+#include "EventLoop.h"
 
 using namespace std;
 
@@ -24,20 +25,12 @@ int main(int argc, char const *argv[])
     socket.bindAddress(servaddr);
     socket.listen();
 
-    Epoll epoll;
-    Channel *serveChannel = new Channel(&epoll, socket.getFd());
+    EventLoop loop;
+    Channel *serveChannel = new Channel(loop.getEpoll(), socket.getFd());
     serveChannel->setReadCallback([&]()
                                   { serveChannel->newConnection(&socket); });
     serveChannel->enableReading();
-    while (true) // 事件循环。
-    {
-        vector<Channel *> channels = epoll.loop(-1); // epoll_wait()，阻塞等待事件发生。
-        // 如果infds>0，表示有事件发生的fd的数量。
-        for (auto &channel : channels) // 遍历epoll返回的数组evs。
-        {
-            channel->handleEvent(); // 处理事件。
-        }
-    }
+    loop.run();
 
     return 0;
 }
