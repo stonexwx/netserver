@@ -33,8 +33,11 @@ void Acceptor::newConnection()
     InetAddress clientaddr;
     Socket *clientfd = new Socket(acceptSocket_->accept(clientaddr)); // 接受新的客户端连接。
 
-    printf("accept client(fd=%d,ip=%s,port=%d) ok.\n", clientfd->getFd(), clientaddr.getIp(), clientaddr.getPort());
-
     // 为新客户端连接准备读事件，并添加到epoll中。
-    Connection *conn = new Connection(loop_, clientfd);
+    newConnectionCallback_(clientfd);
+}
+
+void Acceptor::setNewConnectionCallback(const std::function<void(Socket *)> &cb)
+{
+    newConnectionCallback_ = cb;
 }

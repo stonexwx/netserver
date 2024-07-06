@@ -14,3 +14,18 @@ Connection::~Connection()
     delete clientChannel_;
     delete clientSocket_;
 }
+
+string Connection::getClientIp() const
+{
+    return clientSocket_->getIp();
+}
+
+uint16_t Connection::getClientPort() const
+{
+    return clientSocket_->getPort();
+}
+
+int Connection::getFd() const
+{
+    return clientSocket_->getFd();
+}

@@ -58,6 +58,8 @@ void Socket::bindAddress(const InetAddress &addr)
         close(sockfd_);
         exit(1);
     }
+    ip_ = addr.getIp();
+    port_ = addr.getPort();
 }
 
 void Socket::listen(int nn)
@@ -72,7 +74,6 @@ void Socket::listen(int nn)
 
 int Socket::accept(InetAddress &clientaddr)
 {
-    printf("fd:%d\n", sockfd_);
     struct sockaddr_in addr;
     socklen_t len = sizeof(addr);
     int connfd = ::accept4(sockfd_, (sockaddr *)&addr, &len, SOCK_NONBLOCK | SOCK_CLOEXEC);
@@ -82,6 +83,8 @@ int Socket::accept(InetAddress &clientaddr)
         close(sockfd_);
         exit(1);
     }
+    ip_ = inet_ntoa(addr.sin_addr);
+    port_ = ntohs(addr.sin_port);
     clientaddr.setAddr(addr);
     return connfd;
 }
@@ -105,4 +108,14 @@ void Socket::setNonBlockAndCloseOnExec()
     flags = fcntl(sockfd_, F_GETFD, 0);
     flags |= FD_CLOEXEC;
     fcntl(sockfd_, F_SETFD, flags);
+}
+
+string Socket::getIp() const
+{
+    return ip_;
+}
+
+uint16_t Socket::getPort() const
+{
+    return port_;
 }

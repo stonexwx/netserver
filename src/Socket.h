@@ -16,6 +16,8 @@ class Socket
 
 private:
     const int sockfd_;
+    string ip_;
+    uint16_t port_;
 
 public:
     Socket(int fd);
@@ -31,6 +33,8 @@ public:
     int accept(InetAddress &clientaddr);       // 接受连接
     void shutdownWrite();                      // 关闭写端
     void setNonBlockAndCloseOnExec();          // 设置非阻塞和关闭exec
+    string getIp() const;
+    uint16_t getPort() const;
 };
 
 #endif
