@@ -1,5 +1,13 @@
 #include "InetAddress.h"
 
+InetAddress::InetAddress()
+{
+    bzero(&addr_, sizeof(addr_));
+    addr_.sin_family = AF_INET;
+    addr_.sin_port = htons(10000);
+    addr_.sin_addr.s_addr = htonl(INADDR_ANY);
+}
+
 InetAddress::InetAddress(const string &ip, uint16_t port)
 {
     bzero(&addr_, sizeof(addr_));
@@ -30,4 +38,9 @@ uint16_t InetAddress::getPort() const
 const struct sockaddr *InetAddress::getAddr() const
 {
     return (sockaddr *)&addr_;
+}
+
+void InetAddress::setAddr(const struct sockaddr_in addr)
+{
+    addr_ = addr;
 }

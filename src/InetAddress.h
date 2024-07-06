@@ -14,6 +14,7 @@ private:
     struct sockaddr_in addr_;
 
 public:
+    InetAddress();
     InetAddress(const string &ip, uint16_t port = 10000);
     InetAddress(const struct sockaddr_in addr);
     ~InetAddress();
@@ -21,6 +22,7 @@ public:
     const char *getIp() const;              // 获取IP地址
     uint16_t getPort() const;               // 获取端口号
     const struct sockaddr *getAddr() const; // 获取地址信息
+    void setAddr(const struct sockaddr_in addr);
 };
 
 #endif
