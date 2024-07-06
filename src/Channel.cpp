@@ -79,11 +79,7 @@ void Channel::newConnection(Socket *serveSocket)
     printf("accept client(fd=%d,ip=%s,port=%d) ok.\n", clientfd->getFd(), clientaddr.getIp(), clientaddr.getPort());
 
     // 为新客户端连接准备读事件，并添加到epoll中。
-    Channel *clientChannel = new Channel(loop_, clientfd->getFd());
-    clientChannel->enableReading();
-    clientChannel->useET(); // 使用ET模式。
-    clientChannel->setReadCallback([clientChannel]()
-                                   { clientChannel->handleRead(); });
+    Connection *conn = new Connection(loop_, clientfd);
 }
 
 void Channel::handleRead()

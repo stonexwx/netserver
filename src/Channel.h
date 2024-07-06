@@ -6,17 +6,17 @@
 #include "InetAddress.h"
 #include "Socket.h"
 #include "EventLoop.h"
+#include "Connection.h"
 
 class EventLoop;
 class Channel
 {
 private:
-    int fd_ = -1;               // 文件描述符
-    EventLoop *loop_ = nullptr; // 指向EventLoop对象
-    bool inepoll_ = false;      // 是否在epoll中
-    uint32_t events_ = 0;       // 需要监听的事件
-    uint32_t revents_ = 0;      // 实际发生的事件
-
+    int fd_ = -1;                   // 文件描述符
+    EventLoop *loop_ = nullptr;     // 指向EventLoop对象
+    bool inepoll_ = false;          // 是否在epoll中
+    uint32_t events_ = 0;           // 需要监听的事件
+    uint32_t revents_ = 0;          // 实际发生的事件
     function<void()> readCallback_; // 读回调函数
 
 public:
