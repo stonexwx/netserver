@@ -26,7 +26,7 @@ int main(int argc, char const *argv[])
     socket.listen();
 
     EventLoop loop;
-    Channel *serveChannel = new Channel(loop.getEpoll(), socket.getFd());
+    Channel *serveChannel = new Channel(&loop, socket.getFd());
     serveChannel->setReadCallback([&]()
                                   { serveChannel->newConnection(&socket); });
     serveChannel->enableReading();

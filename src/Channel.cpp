@@ -1,6 +1,6 @@
 #include "Channel.h"
 
-Channel::Channel(Epoll *ep, int fd) : ep_(ep), fd_(fd)
+Channel::Channel(EventLoop *loop, int fd) : loop_(loop), fd_(fd)
 {
 }
 
@@ -21,7 +21,7 @@ void Channel::useET()
 void Channel::enableReading()
 {
     events_ |= EPOLLIN;
-    ep_->updateChannel(this);
+    loop_->updateChannel(this);
 }
 
 void Channel::setInEpoll()
@@ -79,7 +79,7 @@ void Channel::newConnection(Socket *serveSocket)
     printf("accept client(fd=%d,ip=%s,port=%d) ok.\n", clientfd->getFd(), clientaddr.getIp(), clientaddr.getPort());
 
     // 为新客户端连接准备读事件，并添加到epoll中。
-    Channel *clientChannel = new Channel(ep_, clientfd->getFd());
+    Channel *clientChannel = new Channel(loop_, clientfd->getFd());
     clientChannel->enableReading();
     clientChannel->useET(); // 使用ET模式。
     clientChannel->setReadCallback([clientChannel]()

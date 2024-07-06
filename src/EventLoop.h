@@ -2,7 +2,10 @@
 #define _EVENTLOOP_H
 
 #include "Epoll.h"
+#include "Channel.h"
 
+class Channel;
+class Epoll;
 class EventLoop
 {
 private:
@@ -14,7 +17,7 @@ public:
     ~EventLoop();
 
     void run();
-    Epoll *getEpoll() const;
+    void updateChannel(Channel *channel);
 };
 
 #endif
