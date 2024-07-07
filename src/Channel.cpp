@@ -69,35 +69,6 @@ void Channel::handleEvent()
     }
 }
 
-void Channel::handleRead()
-{
-    char buffer[1024];
-    while (true) // 由于使用非阻塞IO，一次读取buffer大小数据，直到全部的数据读取完毕。
-    {
-        bzero(&buffer, sizeof(buffer));
-        ssize_t nread = read(fd_, buffer, sizeof(buffer)); // 这行代码用了read()，也可以用recv()，一样的，不要纠结。
-        if (nread > 0)                                     // 成功的读取到了数据。
-        {
-            // 把接收到的报文内容原封不动的发回去。
-            printf("recv(eventfd=%d):%s\n", fd_, buffer);
-            send(fd_, buffer, strlen(buffer), 0);
-        }
-        else if (nread == -1 && errno == EINTR) // 读取数据的时候被信号中断，继续读取。
-        {
-            continue;
-        }
-        else if (nread == -1 && ((errno == EAGAIN) || (errno == EWOULDBLOCK))) // 全部的数据已读取完毕。
-        {
-            break;
-        }
-        else if (nread == 0) // 客户端连接已断开。
-        {
-            closeCallback_();
-            break;
-        }
-    }
-}
-
 void Channel::setReadCallback(const function<void()> &cb)
 {
     readCallback_ = cb;

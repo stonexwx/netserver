@@ -4,6 +4,7 @@
 #include "EventLoop.h"
 #include "Socket.h"
 #include "Channel.h"
+#include "Buffer.h"
 
 class EventLoop;
 class Socket;
@@ -15,9 +16,8 @@ private:
     EventLoop *loop_;
     Socket *clientSocket_;
     Channel *clientChannel_;
-    string clientIp_;
-    uint16_t clientPort_;
-    int fd_;
+    Buffer inputBuffer_;
+    Buffer outputBuffer_;
 
     std::function<void(Connection *)> closeCallback_;
     std::function<void(Connection *)> errorCallback_;
@@ -30,8 +30,9 @@ public:
     uint16_t getClientPort() const;
     int getFd() const;
 
-    void closeCallback(); // 关闭回调函数
-    void errorCallback(); // 错误回调函数
+    void closeCallback();     // 关闭回调函数
+    void errorCallback();     // 错误回调函数
+    void onMessageCallback(); // 读回调函数
 
     void setCloseCallback(const std::function<void(Connection *)> &cb);
     void setErrorCallback(const std::function<void(Connection *)> &cb);

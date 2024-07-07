@@ -36,8 +36,6 @@ public:
 
     void handleEvent(); // 处理事件
 
-    void handleRead(); // 读事件
-
     void setReadCallback(const function<void()> &cb); // 设置读回调函数
 
     void setCloseCallback(const function<void()> &cb); // 设置关闭回调函数

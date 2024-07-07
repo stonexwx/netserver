@@ -58,8 +58,7 @@ void Socket::bindAddress(const InetAddress &addr)
         close(sockfd_);
         exit(1);
     }
-    ip_ = addr.getIp();
-    port_ = addr.getPort();
+    setIpPort(addr.getIp(), addr.getPort());
 }
 
 void Socket::listen(int nn)
@@ -83,8 +82,7 @@ int Socket::accept(InetAddress &clientaddr)
         close(sockfd_);
         exit(1);
     }
-    ip_ = inet_ntoa(addr.sin_addr);
-    port_ = ntohs(addr.sin_port);
+
     clientaddr.setAddr(addr);
     return connfd;
 }
@@ -118,4 +116,10 @@ string Socket::getIp() const
 uint16_t Socket::getPort() const
 {
     return port_;
+}
+
+void Socket::setIpPort(const string &ip, uint16_t port)
+{
+    ip_ = ip;
+    port_ = port;
 }

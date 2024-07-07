@@ -6,23 +6,134 @@
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
 !_TAG_PROGRAM_VERSION	0.0.0	//
 $(CLIENT_EXE)	src/Makefile	/^$(CLIENT_EXE): $(CLIENT_OBJ)$/;"	t
-$(CLIENT_OBJ)	src/Makefile	/^$(CLIENT_OBJ): $(CLIENT_SRC)$/;"	t
 $(SERVER_EXE)	src/Makefile	/^$(SERVER_EXE): $(SERVER_OBJ)$/;"	t
-$(SERVER_OBJ)	src/Makefile	/^$(SERVER_OBJ): $(SERVER_SRC)$/;"	t
-BULID_DIR	src/Makefile	/^BULID_DIR=..\/build$/;"	m
-CLIENT_EXE	src/Makefile	/^CLIENT_EXE=..\/build\/client$/;"	m
+%.o	src/Makefile	/^%.o: %.cpp$/;"	t
+Acceptor	src/Acceptor.cpp	/^Acceptor::Acceptor(EventLoop *loop,$/;"	f	class:Acceptor
+Acceptor	src/Acceptor.h	/^class Acceptor$/;"	c
+BUILD_DIR	src/Makefile	/^BUILD_DIR=..\/build$/;"	m
+CLIENT_EXE	src/Makefile	/^CLIENT_EXE=$(BUILD_DIR)\/client$/;"	m
 CLIENT_OBJ	src/Makefile	/^CLIENT_OBJ=$(CLIENT_SRC:.cpp=.o)$/;"	m
+CLIENT_SRC	src/Makefile	/^CLIENT_SRC=client.cpp$/;"	m
 CXX	src/Makefile	/^CXX=g++$/;"	m
-InetAddress	include/InetAddress.h	/^    InetAddress(const std::string &ip, uint16_t port)$/;"	f	class:InetAddress
-InetAddress	include/InetAddress.h	/^class InetAddress$/;"	c
-SERVER_EXE	src/Makefile	/^SERVER_EXE=..\/build\/server$/;"	m
+Channel	src/Channel.cpp	/^Channel::Channel(EventLoop *loop, int fd) : loop_(loop), fd_(fd)$/;"	f	class:Channel
+Channel	src/Channel.h	/^class Channel$/;"	c
+Connection	src/Connection.cpp	/^Connection::Connection(EventLoop *loop, Socket *clientSocket)$/;"	f	class:Connection
+Connection	src/Connection.h	/^class Connection$/;"	c
+Debug_DIR	src/Makefile	/^Debug_DIR=$(BUILD_DIR)\/Debug$/;"	m
+Debug_EXE	src/Makefile	/^Debug_EXE=$(Debug_DIR)\/server$/;"	m
+Epoll	src/Epoll.cpp	/^Epoll::Epoll()$/;"	f	class:Epoll
+Epoll	src/Epoll.h	/^class Epoll$/;"	c
+EventLoop	src/EventLoop.cpp	/^EventLoop::EventLoop(\/* args *\/)$/;"	f	class:EventLoop
+EventLoop	src/EventLoop.h	/^class EventLoop$/;"	c
+InetAddress	src/InetAddress.cpp	/^InetAddress::InetAddress()$/;"	f	class:InetAddress
+InetAddress	src/InetAddress.cpp	/^InetAddress::InetAddress(const string &ip, uint16_t port)$/;"	f	class:InetAddress
+InetAddress	src/InetAddress.cpp	/^InetAddress::InetAddress(const struct sockaddr_in addr)$/;"	f	class:InetAddress
+InetAddress	src/InetAddress.h	/^class InetAddress$/;"	c
+MAX_EVENTS	src/Epoll.h	/^    static const int MAX_EVENTS = 100;$/;"	m	class:Epoll	typeref:typename:const int
+SERVER_EXE	src/Makefile	/^SERVER_EXE=$(BUILD_DIR)\/server$/;"	m
 SERVER_OBJ	src/Makefile	/^SERVER_OBJ=$(SERVER_SRC:.cpp=.o)$/;"	m
-SERVER_SRC	src/Makefile	/^SERVER_SRC=tcpepoll.cpp$/;"	m
-_INETADDRESS_H_	include/InetAddress.h	/^#define _INETADDRESS_H_$/;"	d
-addr_	include/InetAddress.h	/^    struct sockaddr_in addr_;$/;"	m	class:InetAddress	typeref:struct:sockaddr_in
+SERVER_SRC	src/Makefile	/^SERVER_SRC=tcpepoll.cpp \\$/;"	m
+Socket	src/Socket.cpp	/^Socket::Socket(int fd) : sockfd_(fd)$/;"	f	class:Socket
+Socket	src/Socket.h	/^class Socket$/;"	c
+TcpServer	src/TcpServer.cpp	/^TcpServer::TcpServer(const string &ip, const string &port)$/;"	f	class:TcpServer
+TcpServer	src/TcpServer.h	/^class TcpServer$/;"	c
+_ACCEPTOR_H_	src/Acceptor.h	/^#define _ACCEPTOR_H_$/;"	d
+_CHANNEL_H_	src/Channel.h	/^#define _CHANNEL_H_$/;"	d
+_CONNECTION_H	src/Connection.h	/^#define _CONNECTION_H$/;"	d
+_EPOLL_H	src/Epoll.h	/^#define _EPOLL_H$/;"	d
+_EVENTLOOP_H	src/EventLoop.h	/^#define _EVENTLOOP_H$/;"	d
+_INETADDRESS_H_	src/InetAddress.h	/^#define _INETADDRESS_H_$/;"	d
+_SOCKET_H_	src/Socket.h	/^#define _SOCKET_H_$/;"	d
+_TCPSERVER_H_	src/TcpServer.h	/^#define _TCPSERVER_H_$/;"	d
+accept	src/Socket.cpp	/^int Socket::accept(InetAddress &clientaddr)$/;"	f	class:Socket	typeref:typename:int
+acceptChannel_	src/Acceptor.h	/^    Channel *acceptChannel_;                              \/\/ 监听套接字对应的Channel对/;"	m	class:Acceptor	typeref:typename:Channel *
+acceptSocket_	src/Acceptor.h	/^    Socket *acceptSocket_;                                \/\/ 监听套接字$/;"	m	class:Acceptor	typeref:typename:Socket *
+acceptor_	src/TcpServer.h	/^    Acceptor *acceptor_;$/;"	m	class:TcpServer	typeref:typename:Acceptor *
+addfd	src/Epoll.cpp	/^void Epoll::addfd(int fd, uint32_t op)$/;"	f	class:Epoll	typeref:typename:void
+addr_	src/InetAddress.h	/^    struct sockaddr_in addr_;$/;"	m	class:InetAddress	typeref:struct:sockaddr_in
 all	src/Makefile	/^all: $(CLIENT_EXE) $(SERVER_EXE)$/;"	t
+bindAddress	src/Socket.cpp	/^void Socket::bindAddress(const InetAddress &addr)$/;"	f	class:Socket	typeref:typename:void
 clean	src/Makefile	/^clean:$/;"	t
-getSockAddrInet	include/InetAddress.h	/^    struct sockaddr_in *getSockAddrInet()$/;"	f	class:InetAddress	typeref:struct:sockaddr_in *
+clientChannel_	src/Connection.h	/^    Channel *clientChannel_;$/;"	m	class:Connection	typeref:typename:Channel *
+clientIp_	src/Connection.h	/^    string clientIp_;$/;"	m	class:Connection	typeref:typename:string
+clientPort_	src/Connection.h	/^    uint16_t clientPort_;$/;"	m	class:Connection	typeref:typename:uint16_t
+clientSocket_	src/Connection.h	/^    Socket *clientSocket_;$/;"	m	class:Connection	typeref:typename:Socket *
+closeCallback	src/Connection.cpp	/^void Connection::closeCallback()$/;"	f	class:Connection	typeref:typename:void
+closeCallback_	src/Channel.h	/^    function<void()> closeCallback_; \/\/ 关闭回调函数$/;"	m	class:Channel	typeref:typename:function<void ()>
+closeCallback_	src/Connection.h	/^    std::function<void(Connection *)> closeCallback_;$/;"	m	class:Connection	typeref:typename:std::function<void (Connection *)>
+closeConnection	src/TcpServer.cpp	/^void TcpServer::closeConnection(Connection *conn)$/;"	f	class:TcpServer	typeref:typename:void
+connMap_	src/TcpServer.h	/^    std::map<int, Connection *> connMap_;$/;"	m	class:TcpServer	typeref:typename:std::map<int,Connection * >
+createNonblockingOrDie	src/Socket.cpp	/^int createNonblockingOrDie()$/;"	f	typeref:typename:int
+debug	src/Makefile	/^debug: $(SERVER_OBJ)$/;"	t
+debug	src/Makefile	/^debug: CXXFLAGS += -g$/;"	t
+enableReading	src/Channel.cpp	/^void Channel::enableReading()$/;"	f	class:Channel	typeref:typename:void
+epoll_	src/EventLoop.h	/^    Epoll *epoll_;$/;"	m	class:EventLoop	typeref:typename:Epoll *
+epoll_fd	src/Epoll.h	/^    int epoll_fd;$/;"	m	class:Epoll	typeref:typename:int
+errorCallback	src/Connection.cpp	/^void Connection::errorCallback()$/;"	f	class:Connection	typeref:typename:void
+errorCallback_	src/Channel.h	/^    function<void()> errorCallback_; \/\/ 错误回调函数$/;"	m	class:Channel	typeref:typename:function<void ()>
+errorCallback_	src/Connection.h	/^    std::function<void(Connection *)> errorCallback_;$/;"	m	class:Connection	typeref:typename:std::function<void (Connection *)>
+errorConnection	src/TcpServer.cpp	/^void TcpServer::errorConnection(Connection *conn)$/;"	f	class:TcpServer	typeref:typename:void
+events_	src/Channel.h	/^    uint32_t events_ = 0;            \/\/ 需要监听的事件$/;"	m	class:Channel	typeref:typename:uint32_t
+events_	src/Epoll.h	/^    struct epoll_event events_[MAX_EVENTS];$/;"	m	class:Epoll	typeref:struct:epoll_event[]
+fd_	src/Channel.h	/^    int fd_ = -1;                    \/\/ 文件描述符$/;"	m	class:Channel	typeref:typename:int
+fd_	src/Connection.h	/^    int fd_;$/;"	m	class:Connection	typeref:typename:int
+getAddr	src/InetAddress.cpp	/^const struct sockaddr *InetAddress::getAddr() const$/;"	f	class:InetAddress	typeref:typename:const struct sockaddr *
+getClientIp	src/Connection.cpp	/^string Connection::getClientIp() const$/;"	f	class:Connection	typeref:typename:string
+getClientPort	src/Connection.cpp	/^uint16_t Connection::getClientPort() const$/;"	f	class:Connection	typeref:typename:uint16_t
+getEvents	src/Channel.cpp	/^uint32_t Channel::getEvents() const$/;"	f	class:Channel	typeref:typename:uint32_t
+getFd	src/Channel.cpp	/^int Channel::getFd() const$/;"	f	class:Channel	typeref:typename:int
+getFd	src/Connection.cpp	/^int Connection::getFd() const$/;"	f	class:Connection	typeref:typename:int
+getFd	src/Socket.cpp	/^int Socket::getFd() const$/;"	f	class:Socket	typeref:typename:int
+getIp	src/InetAddress.cpp	/^const char *InetAddress::getIp() const$/;"	f	class:InetAddress	typeref:typename:const char *
+getIp	src/Socket.cpp	/^string Socket::getIp() const$/;"	f	class:Socket	typeref:typename:string
+getPort	src/InetAddress.cpp	/^uint16_t InetAddress::getPort() const$/;"	f	class:InetAddress	typeref:typename:uint16_t
+getPort	src/Socket.cpp	/^uint16_t Socket::getPort() const$/;"	f	class:Socket	typeref:typename:uint16_t
+getRevents	src/Channel.cpp	/^uint32_t Channel::getRevents() const$/;"	f	class:Channel	typeref:typename:uint32_t
+handleEvent	src/Channel.cpp	/^void Channel::handleEvent()$/;"	f	class:Channel	typeref:typename:void
+handleRead	src/Channel.cpp	/^void Channel::handleRead()$/;"	f	class:Channel	typeref:typename:void
+inepoll_	src/Channel.h	/^    bool inepoll_ = false;           \/\/ 是否在epoll中$/;"	m	class:Channel	typeref:typename:bool
+inpoll	src/Channel.cpp	/^bool Channel::inpoll() const$/;"	f	class:Channel	typeref:typename:bool
+ip_	src/Socket.h	/^    string ip_;$/;"	m	class:Socket	typeref:typename:string
+listen	src/Socket.cpp	/^void Socket::listen(int nn)$/;"	f	class:Socket	typeref:typename:void
+loop	src/Epoll.cpp	/^vector<Channel *> Epoll::loop(int timeout)$/;"	f	class:Epoll	typeref:typename:vector<Channel * >
+loop_	src/Acceptor.h	/^    EventLoop *loop_;                                     \/\/ 指向EventLoop对象$/;"	m	class:Acceptor	typeref:typename:EventLoop *
+loop_	src/Channel.h	/^    EventLoop *loop_ = nullptr;      \/\/ 指向EventLoop对象$/;"	m	class:Channel	typeref:typename:EventLoop *
+loop_	src/Connection.h	/^    EventLoop *loop_;$/;"	m	class:Connection	typeref:typename:EventLoop *
+loop_	src/TcpServer.h	/^    EventLoop loop_;$/;"	m	class:TcpServer	typeref:typename:EventLoop
 main	src/client.cpp	/^int main(int argc, char *argv[])$/;"	f	typeref:typename:int
 main	src/tcpepoll.cpp	/^int main(int argc, char const *argv[])$/;"	f	typeref:typename:int
-socketInit	src/tcpepoll.cpp	/^int socketInit()$/;"	f	typeref:typename:int
+newConnection	src/Acceptor.cpp	/^void Acceptor::newConnection()$/;"	f	class:Acceptor	typeref:typename:void
+newConnection	src/TcpServer.cpp	/^void TcpServer::newConnection(Socket *clientSocket)$/;"	f	class:TcpServer	typeref:typename:void
+newConnectionCallback_	src/Acceptor.h	/^    std::function<void(Socket *)> newConnectionCallback_; \/\/ 新连接回调函数$/;"	m	class:Acceptor	typeref:typename:std::function<void (Socket *)>
+port_	src/Socket.h	/^    uint16_t port_;$/;"	m	class:Socket	typeref:typename:uint16_t
+readCallback_	src/Channel.h	/^    function<void()> readCallback_;  \/\/ 读回调函数$/;"	m	class:Channel	typeref:typename:function<void ()>
+revents_	src/Channel.h	/^    uint32_t revents_ = 0;           \/\/ 实际发生的事件$/;"	m	class:Channel	typeref:typename:uint32_t
+run	src/EventLoop.cpp	/^void EventLoop::run()$/;"	f	class:EventLoop	typeref:typename:void
+setAddr	src/InetAddress.cpp	/^void InetAddress::setAddr(const struct sockaddr_in addr)$/;"	f	class:InetAddress	typeref:typename:void
+setCloseCallback	src/Channel.cpp	/^void Channel::setCloseCallback(const function<void()> &cb)$/;"	f	class:Channel	typeref:typename:void
+setCloseCallback	src/Connection.cpp	/^void Connection::setCloseCallback(const std::function<void(Connection *)> &cb)$/;"	f	class:Connection	typeref:typename:void
+setErrorCallback	src/Channel.cpp	/^void Channel::setErrorCallback(const function<void()> &cb)$/;"	f	class:Channel	typeref:typename:void
+setErrorCallback	src/Connection.cpp	/^void Connection::setErrorCallback(const std::function<void(Connection *)> &cb)$/;"	f	class:Connection	typeref:typename:void
+setInEpoll	src/Channel.cpp	/^void Channel::setInEpoll()$/;"	f	class:Channel	typeref:typename:void
+setKeepAlive	src/Socket.cpp	/^void Socket::setKeepAlive(bool on)$/;"	f	class:Socket	typeref:typename:void
+setNewConnectionCallback	src/Acceptor.cpp	/^void Acceptor::setNewConnectionCallback(const std::function<void(Socket *)> &cb)$/;"	f	class:Acceptor	typeref:typename:void
+setNoDelay	src/Socket.cpp	/^void Socket::setNoDelay(bool on)$/;"	f	class:Socket	typeref:typename:void
+setNonBlockAndCloseOnExec	src/Socket.cpp	/^void Socket::setNonBlockAndCloseOnExec()$/;"	f	class:Socket	typeref:typename:void
+setReadCallback	src/Channel.cpp	/^void Channel::setReadCallback(const function<void()> &cb)$/;"	f	class:Channel	typeref:typename:void
+setReuseAddr	src/Socket.cpp	/^void Socket::setReuseAddr(bool on)$/;"	f	class:Socket	typeref:typename:void
+setReusePort	src/Socket.cpp	/^void Socket::setReusePort(bool on)$/;"	f	class:Socket	typeref:typename:void
+setrevents	src/Channel.cpp	/^void Channel::setrevents(uint32_t revents)$/;"	f	class:Channel	typeref:typename:void
+shutdownWrite	src/Socket.cpp	/^void Socket::shutdownWrite()$/;"	f	class:Socket	typeref:typename:void
+sockfd_	src/Socket.h	/^    const int sockfd_;$/;"	m	class:Socket	typeref:typename:const int
+tcpServerStart	src/TcpServer.cpp	/^void TcpServer::tcpServerStart()$/;"	f	class:TcpServer	typeref:typename:void
+updateChannel	src/Epoll.cpp	/^void Epoll::updateChannel(Channel *channel)$/;"	f	class:Epoll	typeref:typename:void
+updateChannel	src/EventLoop.cpp	/^void EventLoop::updateChannel(Channel *channel)$/;"	f	class:EventLoop	typeref:typename:void
+useET	src/Channel.cpp	/^void Channel::useET()$/;"	f	class:Channel	typeref:typename:void
+~Acceptor	src/Acceptor.cpp	/^Acceptor::~Acceptor()$/;"	f	class:Acceptor
+~Channel	src/Channel.cpp	/^Channel::~Channel()$/;"	f	class:Channel
+~Connection	src/Connection.cpp	/^Connection::~Connection()$/;"	f	class:Connection
+~Epoll	src/Epoll.cpp	/^Epoll::~Epoll()$/;"	f	class:Epoll
+~EventLoop	src/EventLoop.cpp	/^EventLoop::~EventLoop()$/;"	f	class:EventLoop
+~InetAddress	src/InetAddress.cpp	/^InetAddress::~InetAddress()$/;"	f	class:InetAddress
+~Socket	src/Socket.cpp	/^Socket::~Socket()$/;"	f	class:Socket
+~TcpServer	src/TcpServer.cpp	/^TcpServer::~TcpServer()$/;"	f	class:TcpServer

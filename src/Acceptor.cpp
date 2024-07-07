@@ -32,7 +32,7 @@ void Acceptor::newConnection()
 {
     InetAddress clientaddr;
     Socket *clientfd = new Socket(acceptSocket_->accept(clientaddr)); // 接受新的客户端连接。
-
+    clientfd->setIpPort(clientaddr.getIp(), clientaddr.getPort());
     // 为新客户端连接准备读事件，并添加到epoll中。
     newConnectionCallback_(clientfd);
 }

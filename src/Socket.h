@@ -28,11 +28,14 @@ public:
     void setNoDelay(bool on);   // 设置TCP_NODELAY，禁用Nagle算法，减少延迟
     void setKeepAlive(bool on); // 设置SO_KEEPALIVE，启用保活机制，可以检测到对端是否崩溃
 
+    void setIpPort(const string &ip, uint16_t port); // 设置IP和端口
+
     void bindAddress(const InetAddress &addr); // 绑定地址
     void listen(int nn = 128);                 // 监听
     int accept(InetAddress &clientaddr);       // 接受连接
     void shutdownWrite();                      // 关闭写端
     void setNonBlockAndCloseOnExec();          // 设置非阻塞和关闭exec
+
     string getIp() const;
     uint16_t getPort() const;
 };
