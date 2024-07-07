@@ -73,14 +73,8 @@ void Connection::onMessageCallback()
                 string message(inputBuffer_.data() + 4, len);
                 inputBuffer_.erase(0, len + 4);
                 printf("message(eventfd=%d): %s\n", getFd(), message.c_str());
-                message = "reply:" + message;
-                len = message.size();
-                char tmpbuf[1024];
-                memset(tmpbuf, len, 4);
-                memcpy(tmpbuf + 4, message.c_str(), len);
-                outputBuffer_.append(tmpbuf, len + 4);
-                send(getFd(), outputBuffer_.data(), outputBuffer_.size(), 0);
-                outputBuffer_.clear();
+
+                onMessageCallback_(this, message);
             }
 
             break;
@@ -108,4 +102,9 @@ void Connection::setCloseCallback(const std::function<void(Connection *)> &cb)
 void Connection::setErrorCallback(const std::function<void(Connection *)> &cb)
 {
     errorCallback_ = cb;
+}
+
+void Connection::setOnMessageCallback(const std::function<void(Connection *, string)> &cb)
+{
+    onMessageCallback_ = cb;
 }

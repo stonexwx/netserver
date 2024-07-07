@@ -27,6 +27,7 @@ public:
 
     void closeConnection(Connection *conn);
     void errorConnection(Connection *conn);
+    void onMessage(Connection *conn, string data);
 };
 
 #endif

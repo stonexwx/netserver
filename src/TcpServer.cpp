@@ -31,7 +31,7 @@ void TcpServer::newConnection(Socket *clientSocket)
 
     conn_->setCloseCallback(std::bind(&TcpServer::closeConnection, this, std::placeholders::_1));
     conn_->setErrorCallback(std::bind(&TcpServer::errorConnection, this, std::placeholders::_1));
-
+    conn_->setOnMessageCallback(std::bind(&TcpServer::onMessage, this, std::placeholders::_1, std::placeholders::_2));
     connMap_[conn_->getFd()] = conn_;
 }
 
@@ -53,4 +53,14 @@ void TcpServer::errorConnection(Connection *conn)
         delete iter->second;
         connMap_.erase(iter);
     }
+}
+
+void TcpServer::onMessage(Connection *conn, string data)
+{
+    data = "reply:" + data;
+    int len = data.size();
+    char tmpbuf[1024];
+    memset(tmpbuf, len, 4);
+    memcpy(tmpbuf + 4, data.c_str(), len);
+    send(conn->getFd(), tmpbuf, len + 4, 0);
 }
