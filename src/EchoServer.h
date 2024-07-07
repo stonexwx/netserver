@@ -9,7 +9,7 @@ private:
     TcpServer server_;
 
 public:
-    EchoServer(const string &ip, const string &port);
+    EchoServer(const string &ip, const string &port, int treadNum = 3);
     ~EchoServer();
 
     void start();
@@ -18,7 +18,7 @@ public:
 
     void handleCloseConnection(Connection *conn);
     void handleErrorConnection(Connection *conn);
-    void handleOnMessage(Connection *conn, string& data);
+    void handleOnMessage(Connection *conn, string &data);
 
     void handleSendComplete(Connection *conn);
     void handleEpollTimeout(EventLoop *loop);

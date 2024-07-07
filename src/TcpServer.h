@@ -7,15 +7,19 @@
 #include "EventLoop.h"
 #include "Acceptor.h"
 #include "Connection.h"
+#include "ThreadPool.h"
 
 class EventLoop;
 
 class TcpServer
 {
 private:
-    EventLoop loop_;
+    EventLoop *mainLoop_; // 主EventLoop
+    std::vector<EventLoop *> loops_;
     Acceptor *acceptor_;
     std::map<int, Connection *> connMap_;
+    ThreadPool *threadPool_;
+    int threadNum_;
 
     std::function<void(Socket *)> newConnectionCallback_;
     std::function<void(Connection *)> closeConnectionCallback_;
@@ -25,7 +29,7 @@ private:
     std::function<void(EventLoop *)> epollTimeoutCallback_;
 
 public:
-    TcpServer(const string &ip, const string &port);
+    TcpServer(const string &ip, const string &port, int treadNum = 3);
     ~TcpServer();
 
     void tcpServerStart();

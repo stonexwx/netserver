@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     printf("connect ok.\n");
     // printf("开始时间：%d",time(0));
 
-    for (int ii = 0; ii < 100; ii++)
+    for (int ii = 0; ii < 1; ii++)
     {
         // 从命令行输入内容。
         memset(buf, 0, sizeof(buf));
@@ -75,5 +75,6 @@ int main(int argc, char *argv[])
         printf("recv:%s\n", buf);
     }
 
+    sleep(100);
     // printf("结束时间：%d",time(0));
 }

@@ -1,5 +1,5 @@
 #include "Connection.h"
-
+#include <sys/syscall.h>
 Connection::Connection(EventLoop *loop, Socket *clientSocket)
     : loop_(loop), clientSocket_(clientSocket)
 {
@@ -69,6 +69,7 @@ void Connection::onMessageCallback()
         else if (nread == -1 && ((errno == EAGAIN) || (errno == EWOULDBLOCK))) // 全部的数据已读取完毕。
         {
             // printf("recv(eventfd=%d): %s\n", getFd(), inputBuffer_.data());
+            printf("threadid=%ld\n", syscall(SYS_gettid));
             while (true)
             {
                 int len;

@@ -1,6 +1,6 @@
 #include "EchoServer.h"
 
-EchoServer::EchoServer(const string &ip, const string &port) : server_(ip, port)
+EchoServer::EchoServer(const string &ip, const string &port, int treadNum) : server_(ip, port, treadNum)
 {
     server_.setNewConnectionCallback(std::bind(&EchoServer::handleNewConnection, this, std::placeholders::_1));
     server_.setCloseConnectionCallback(std::bind(&EchoServer::handleCloseConnection, this, std::placeholders::_1));

@@ -1,4 +1,5 @@
 #include "EventLoop.h"
+#include <sys/syscall.h>
 
 EventLoop::EventLoop(/* args */)
 {
@@ -12,9 +13,10 @@ EventLoop::~EventLoop()
 
 void EventLoop::run()
 {
+    printf("EventLoop::run thread %ld run\n", syscall(SYS_gettid));
     while (true) // 事件循环。
     {
-        vector<Channel *> channels = epoll_->loop(10 * 1000); // epoll_wait()，阻塞等待事件发生。
+        vector<Channel *> channels = epoll_->loop(); // epoll_wait()，阻塞等待事件发生。
         if (channels.empty() && timeoutCallback_)
         {
             timeoutCallback_(this);
