@@ -8,7 +8,7 @@ TcpServer::TcpServer(const string &ip, const string &port, int treadNum) : threa
     acceptor_ = new Acceptor(mainLoop_, ip, port);
     acceptor_->setNewConnectionCallback(std::bind(&TcpServer::newConnection, this, std::placeholders::_1));
 
-    threadPool_ = new ThreadPool(threadNum_); // 创建线程池
+    threadPool_ = new ThreadPool(threadNum_, "tcp server"); // 创建线程池
 
     // 创建从事件循环
 

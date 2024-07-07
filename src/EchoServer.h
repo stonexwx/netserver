@@ -2,14 +2,17 @@
 #define _ECHO_SERVER_H
 
 #include "TcpServer.h"
+#include "ThreadPool.h"
 
 class EchoServer
 {
 private:
     TcpServer server_;
+    ThreadPool threadPool_;
 
 public:
-    EchoServer(const string &ip, const string &port, int treadNum = 3);
+    EchoServer(const string &ip, const string &port,
+               int subthreadNum = 3, int workThreadNum = 3);
     ~EchoServer();
 
     void start();
@@ -22,6 +25,8 @@ public:
 
     void handleSendComplete(Connection *conn);
     void handleEpollTimeout(EventLoop *loop);
+
+    void onMessageInThreadPool(Connection *conn, string &data);
 };
 
 #endif

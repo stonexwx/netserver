@@ -13,7 +13,6 @@ EventLoop::~EventLoop()
 
 void EventLoop::run()
 {
-    printf("EventLoop::run thread %ld run\n", syscall(SYS_gettid));
     while (true) // 事件循环。
     {
         vector<Channel *> channels = epoll_->loop(); // epoll_wait()，阻塞等待事件发生。

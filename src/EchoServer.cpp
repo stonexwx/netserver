@@ -1,7 +1,10 @@
 #include "EchoServer.h"
 
-EchoServer::EchoServer(const string &ip, const string &port, int treadNum) : server_(ip, port, treadNum)
+EchoServer::EchoServer(const string &ip, const string &port,
+                       int subthreadNum, int workThreadNum) : server_(ip, port, subthreadNum),
+                                                              threadPool_(workThreadNum, "work thread")
 {
+
     server_.setNewConnectionCallback(std::bind(&EchoServer::handleNewConnection, this, std::placeholders::_1));
     server_.setCloseConnectionCallback(std::bind(&EchoServer::handleCloseConnection, this, std::placeholders::_1));
     server_.setErrorConnectionCallback(std::bind(&EchoServer::handleErrorConnection, this, std::placeholders::_1));
@@ -37,11 +40,18 @@ void EchoServer::handleErrorConnection(Connection *conn)
     std::cout << "client(eventfd=" << conn->getFd() << ") disconnected." << std::endl;
 }
 
-void EchoServer::handleOnMessage(Connection *conn, string &data)
+void EchoServer::onMessageInThreadPool(Connection *conn, string &data)
 {
     data = "reply:" + data;
 
     conn->send(data.data(), data.size());
+}
+
+void EchoServer::handleOnMessage(Connection *conn, string &data)
+{
+
+    // 业务添加到工作线程里
+    threadPool_.addtask(std::bind(&EchoServer::onMessageInThreadPool, this, conn, data));
 }
 
 void EchoServer::handleSendComplete(Connection *conn)
