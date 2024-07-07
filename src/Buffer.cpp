@@ -27,3 +27,8 @@ void Buffer::clear()
 {
     buffer_.clear();
 }
+
+void Buffer::erase(size_t pos, size_t len)
+{
+    buffer_.erase(pos, len);
+}

@@ -61,10 +61,28 @@ void Connection::onMessageCallback()
         }
         else if (nread == -1 && ((errno == EAGAIN) || (errno == EWOULDBLOCK))) // 全部的数据已读取完毕。
         {
-            printf("recv(eventfd=%d): %s\n", getFd(), inputBuffer_.data());
-            outputBuffer_ = inputBuffer_;
-            inputBuffer_.clear();
-            send(getFd(), outputBuffer_.data(), outputBuffer_.size(), 0);
+            // printf("recv(eventfd=%d): %s\n", getFd(), inputBuffer_.data());
+            while (true)
+            {
+                int len;
+                memcpy(&len, inputBuffer_.data(), 4);
+                if (inputBuffer_.size() < len + 4)
+                {
+                    break;
+                }
+                string message(inputBuffer_.data() + 4, len);
+                inputBuffer_.erase(0, len + 4);
+                printf("message(eventfd=%d): %s\n", getFd(), message.c_str());
+                message = "reply:" + message;
+                len = message.size();
+                char tmpbuf[1024];
+                memset(tmpbuf, len, 4);
+                memcpy(tmpbuf + 4, message.c_str(), len);
+                outputBuffer_.append(tmpbuf, len + 4);
+                send(getFd(), outputBuffer_.data(), outputBuffer_.size(), 0);
+                outputBuffer_.clear();
+            }
+
             break;
         }
         else if (nread == 0) // 客户端连接已断开。
