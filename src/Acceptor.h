@@ -13,12 +13,12 @@ class Channel;
 class Acceptor
 {
 private:
-    std::unique_ptr<EventLoop> &loop_;                                   // 指向EventLoop对象
+    EventLoop *loop_;                                                    // 指向EventLoop对象
     Socket acceptSocket_;                                                // 监听套接字
     Channel acceptChannel_;                                              // 监听套接字对应的Channel对象
     std::function<void(std::unique_ptr<Socket>)> newConnectionCallback_; // 新连接回调函数
 public:
-    Acceptor(std::unique_ptr<EventLoop> &loop,
+    Acceptor(EventLoop *loop,
              const string &ip,
              const string &port);
     ~Acceptor();

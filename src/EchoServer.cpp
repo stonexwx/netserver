@@ -46,9 +46,15 @@ void EchoServer::onMessageInThreadPool(spConnection conn, string &data)
 
 void EchoServer::handleOnMessage(spConnection conn, string &data)
 {
-
-    // 业务添加到工作线程里
-    threadPool_.addtask(std::bind(&EchoServer::onMessageInThreadPool, this, conn, data));
+    if (threadPool_.getSize() == 0)
+    {
+        onMessageInThreadPool(conn, data);
+    }
+    else
+    {
+        // 业务添加到工作线程里
+        threadPool_.addtask(std::bind(&EchoServer::onMessageInThreadPool, this, conn, data));
+    }
 }
 
 void EchoServer::handleSendComplete(spConnection conn)

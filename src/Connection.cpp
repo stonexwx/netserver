@@ -1,6 +1,6 @@
 #include "Connection.h"
 #include <sys/syscall.h>
-Connection::Connection(std::unique_ptr<EventLoop> &loop, std::unique_ptr<Socket> clientSocket)
+Connection::Connection(EventLoop *loop, std::unique_ptr<Socket> clientSocket)
     : loop_(loop), clientSocket_(std::move(clientSocket)), disconnected_(false), clientChannel_(new Channel(loop_, clientSocket_->getFd()))
 {
     clientChannel_->enableReading();

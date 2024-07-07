@@ -47,6 +47,11 @@ void ThreadPool::addtask(std::function<void()> task)
     condition_.notify_one(); // 唤醒一个线程。
 }
 
+int ThreadPool::getSize()
+{
+    return threads_.size();
+}
+
 ThreadPool::~ThreadPool()
 {
     stop_ = true;

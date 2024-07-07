@@ -1,7 +1,7 @@
 #include "TcpServer.h"
 
 TcpServer::TcpServer(const string &ip, const string &port, int treadNum)
-    : threadNum_(treadNum), mainLoop_(new EventLoop()), acceptor_(mainLoop_, ip, port), threadPool_(threadNum_, "tcp server")
+    : threadNum_(treadNum), mainLoop_(new EventLoop()), acceptor_(mainLoop_.get(), ip, port), threadPool_(threadNum_, "tcp server")
 {
     mainLoop_->setTimeoutCallback(std::bind(&TcpServer::epollTimeout, this, std::placeholders::_1));
 
@@ -28,7 +28,7 @@ void TcpServer::tcpServerStart()
 
 void TcpServer::newConnection(std::unique_ptr<Socket> clientSocket)
 {
-    spConnection conn_(new Connection(loops_[connMap_.size() % threadNum_], std::move(clientSocket)));
+    spConnection conn_(new Connection(loops_[connMap_.size() % threadNum_].get(), std::move(clientSocket)));
 
     conn_->setCloseCallback(std::bind(&TcpServer::closeConnection, this, std::placeholders::_1));
     conn_->setErrorCallback(std::bind(&TcpServer::errorConnection, this, std::placeholders::_1));

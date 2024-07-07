@@ -2,7 +2,6 @@
 #define _CHANNEL_H_
 
 #include <functional>
-#include <memory>
 
 #include "InetAddress.h"
 #include "Socket.h"
@@ -13,17 +12,17 @@ class EventLoop;
 class Channel
 {
 private:
-    int fd_ = -1;                      // 文件描述符
-    std::unique_ptr<EventLoop> &loop_; // 指向EventLoop对象
-    bool inepoll_ = false;             // 是否在epoll中
-    uint32_t events_ = 0;              // 需要监听的事件
-    uint32_t revents_ = 0;             // 实际发生的事件
-    function<void()> readCallback_;    // 读回调函数
-    function<void()> closeCallback_;   // 关闭回调函数
-    function<void()> errorCallback_;   // 错误回调函数
-    function<void()> writeCallback_;   // 写回调函数
+    int fd_ = -1;                    // 文件描述符
+    EventLoop *loop_ = nullptr;      // 指向EventLoop对象
+    bool inepoll_ = false;           // 是否在epoll中
+    uint32_t events_ = 0;            // 需要监听的事件
+    uint32_t revents_ = 0;           // 实际发生的事件
+    function<void()> readCallback_;  // 读回调函数
+    function<void()> closeCallback_; // 关闭回调函数
+    function<void()> errorCallback_; // 错误回调函数
+    function<void()> writeCallback_; // 写回调函数
 public:
-    Channel(std::unique_ptr<EventLoop> &loop, int fd);
+    Channel(EventLoop *loop, int fd);
     ~Channel();
 
     int getFd() const;
