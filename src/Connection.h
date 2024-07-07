@@ -20,7 +20,7 @@ class Connection : public std::enable_shared_from_this<Connection>
 private:
     EventLoop *loop_;
     std::unique_ptr<Socket> clientSocket_;
-    Channel *clientChannel_;
+    std::unique_ptr<Channel> clientChannel_;
     Buffer inputBuffer_;
     Buffer outputBuffer_;
     std::atomic_bool disconnected_;

@@ -1,9 +1,8 @@
 #include "Connection.h"
 #include <sys/syscall.h>
 Connection::Connection(EventLoop *loop, std::unique_ptr<Socket> clientSocket)
-    : loop_(loop), clientSocket_(std::move(clientSocket)), disconnected_(false)
+    : loop_(loop), clientSocket_(std::move(clientSocket)), disconnected_(false), clientChannel_(new Channel(loop_, clientSocket_->getFd()))
 {
-    clientChannel_ = new Channel(loop_, clientSocket_->getFd());
     clientChannel_->enableReading();
     clientChannel_->useET(); // 使用ET模式。
     clientChannel_->setReadCallback(std::bind(&Connection::onMessageCallback, this));
@@ -14,7 +13,6 @@ Connection::Connection(EventLoop *loop, std::unique_ptr<Socket> clientSocket)
 
 Connection::~Connection()
 {
-    delete clientChannel_;
 }
 
 string Connection::getClientIp() const

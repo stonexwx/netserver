@@ -3,6 +3,7 @@
 
 #include "Epoll.h"
 #include "Channel.h"
+#include <memory>
 
 class Channel;
 class Epoll;
@@ -10,7 +11,7 @@ class EventLoop
 {
 private:
     /* data */
-    Epoll *epoll_;
+    std::unique_ptr<Epoll> epoll_;
 
     std::function<void(EventLoop *)> timeoutCallback_;
 

@@ -1,14 +1,12 @@
 #include "EventLoop.h"
 #include <sys/syscall.h>
 
-EventLoop::EventLoop(/* args */)
+EventLoop::EventLoop(/* args */) : epoll_(new Epoll())
 {
-    epoll_ = new Epoll();
 }
 
 EventLoop::~EventLoop()
 {
-    delete epoll_;
 }
 
 void EventLoop::run()
