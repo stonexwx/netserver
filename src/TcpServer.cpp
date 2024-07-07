@@ -1,15 +1,11 @@
 #include "TcpServer.h"
 
 TcpServer::TcpServer(const string &ip, const string &port, int treadNum)
-    : threadNum_(treadNum), mainLoop_(new EventLoop())
+    : threadNum_(treadNum), mainLoop_(new EventLoop()), acceptor_(mainLoop_, ip, port), threadPool_(threadNum_, "tcp server")
 {
-
     mainLoop_->setTimeoutCallback(std::bind(&TcpServer::epollTimeout, this, std::placeholders::_1));
 
-    acceptor_ = new Acceptor(mainLoop_, ip, port);
-    acceptor_->setNewConnectionCallback(std::bind(&TcpServer::newConnection, this, std::placeholders::_1));
-
-    threadPool_ = new ThreadPool(threadNum_, "tcp server"); // 创建线程池
+    acceptor_.setNewConnectionCallback(std::bind(&TcpServer::newConnection, this, std::placeholders::_1));
 
     // 创建从事件循环
 
@@ -17,15 +13,12 @@ TcpServer::TcpServer(const string &ip, const string &port, int treadNum)
     {
         loops_.emplace_back(new EventLoop);
         loops_[i]->setTimeoutCallback(std::bind(&TcpServer::epollTimeout, this, std::placeholders::_1));
-        threadPool_->addtask(std::bind(&EventLoop::run, loops_[i].get()));
+        threadPool_.addtask(std::bind(&EventLoop::run, loops_[i].get()));
     }
 }
 
 TcpServer::~TcpServer()
 {
-    delete acceptor_;
-
-    delete threadPool_;
 }
 
 void TcpServer::tcpServerStart()
@@ -87,7 +80,6 @@ void TcpServer::onMessage(spConnection conn, string &data)
 
 void TcpServer::sendComplete(spConnection conn)
 {
-
     if (sendCompleteCallback_)
     {
         sendCompleteCallback_(conn);
@@ -96,7 +88,6 @@ void TcpServer::sendComplete(spConnection conn)
 
 void TcpServer::epollTimeout(EventLoop *loop)
 {
-
     if (epollTimeoutCallback_)
     {
         epollTimeoutCallback_(loop);

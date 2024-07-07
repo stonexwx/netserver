@@ -17,10 +17,10 @@ class TcpServer
 private:
     std::unique_ptr<EventLoop> mainLoop_; // 主EventLoop
     std::vector<std::unique_ptr<EventLoop>> loops_;
-    Acceptor *acceptor_;
+    Acceptor acceptor_;
     std::map<int, spConnection> connMap_;
-    ThreadPool *threadPool_;
     int threadNum_;
+    ThreadPool threadPool_;
 
     std::function<void(spConnection)> newConnectionCallback_;
     std::function<void(spConnection)> closeConnectionCallback_;
