@@ -17,7 +17,7 @@ public:
 
     void start();
 
-    void handleNewConnection(Socket *clientSocket);
+    void handleNewConnection(spConnection conn);
 
     void handleCloseConnection(spConnection conn);
     void handleErrorConnection(spConnection conn);

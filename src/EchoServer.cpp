@@ -22,12 +22,9 @@ void EchoServer::start()
     server_.tcpServerStart();
 }
 
-void EchoServer::handleNewConnection(Socket *clientSocket)
+void EchoServer::handleNewConnection(spConnection conn)
 {
-    std::cout << "accept client(fd=" << clientSocket->getFd()
-              << ",ip=" << clientSocket->getIp()
-              << ",port=" << clientSocket->getPort()
-              << ") ok." << std::endl;
+    cout << "handleNewConnection client(eventfd=" << conn->getFd() << ") connected. ip " << conn->getClientIp() << ":" << conn->getClientPort() << endl;
 }
 
 void EchoServer::handleCloseConnection(spConnection conn)

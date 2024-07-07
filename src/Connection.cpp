@@ -1,7 +1,7 @@
 #include "Connection.h"
 #include <sys/syscall.h>
-Connection::Connection(EventLoop *loop, Socket *clientSocket)
-    : loop_(loop), clientSocket_(clientSocket), disconnected_(false)
+Connection::Connection(EventLoop *loop, std::unique_ptr<Socket> clientSocket)
+    : loop_(loop), clientSocket_(std::move(clientSocket)), disconnected_(false)
 {
     clientChannel_ = new Channel(loop_, clientSocket_->getFd());
     clientChannel_->enableReading();
@@ -15,7 +15,6 @@ Connection::Connection(EventLoop *loop, Socket *clientSocket)
 Connection::~Connection()
 {
     delete clientChannel_;
-    delete clientSocket_;
 }
 
 string Connection::getClientIp() const

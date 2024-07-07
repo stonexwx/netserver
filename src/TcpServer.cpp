@@ -37,10 +37,10 @@ void TcpServer::tcpServerStart()
     mainLoop_->run();
 }
 
-void TcpServer::newConnection(Socket *clientSocket)
+void TcpServer::newConnection(std::unique_ptr<Socket> clientSocket)
 {
     // Connection *conn_ = new Connection(mainLoop_, clientSocket);
-    spConnection conn_(new Connection(loops_[connMap_.size() % threadNum_], clientSocket));
+    spConnection conn_(new Connection(loops_[connMap_.size() % threadNum_], std::move(clientSocket)));
 
     // printf("accept client(fd=%d,ip=%s,port=%d) ok.\n",
     //        conn_->getFd(),
@@ -55,7 +55,8 @@ void TcpServer::newConnection(Socket *clientSocket)
 
     if (newConnectionCallback_)
     {
-        newConnectionCallback_(clientSocket);
+
+        newConnectionCallback_(conn_);
     }
 }
 
@@ -112,7 +113,7 @@ void TcpServer::epollTimeout(EventLoop *loop)
     }
 }
 
-void TcpServer::setNewConnectionCallback(const std::function<void(Socket *)> &cb)
+void TcpServer::setNewConnectionCallback(const std::function<void(spConnection)> &cb)
 {
     newConnectionCallback_ = cb;
 }

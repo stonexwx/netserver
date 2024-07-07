@@ -21,7 +21,7 @@ private:
     ThreadPool *threadPool_;
     int threadNum_;
 
-    std::function<void(Socket *)> newConnectionCallback_;
+    std::function<void(spConnection)> newConnectionCallback_;
     std::function<void(spConnection)> closeConnectionCallback_;
     std::function<void(spConnection)> errorConnectionCallback_;
     std::function<void(spConnection, string &)> onMessageCallback_;
@@ -34,7 +34,7 @@ public:
 
     void tcpServerStart();
 
-    void newConnection(Socket *clientSocket);
+    void newConnection(std::unique_ptr<Socket> clientSocket);
 
     void closeConnection(spConnection conn);
     void errorConnection(spConnection conn);
@@ -43,7 +43,7 @@ public:
     void sendComplete(spConnection conn);
     void epollTimeout(EventLoop *loop);
 
-    void setNewConnectionCallback(const std::function<void(Socket *)> &cb);
+    void setNewConnectionCallback(const std::function<void(spConnection)> &cb);
     void setCloseConnectionCallback(const std::function<void(spConnection)> &cb);
     void setErrorConnectionCallback(const std::function<void(spConnection)> &cb);
     void setOnMessageCallback(const std::function<void(spConnection, string &)> &cb);

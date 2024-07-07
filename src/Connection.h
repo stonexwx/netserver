@@ -19,7 +19,7 @@ class Connection : public std::enable_shared_from_this<Connection>
 {
 private:
     EventLoop *loop_;
-    Socket *clientSocket_;
+    std::unique_ptr<Socket> clientSocket_;
     Channel *clientChannel_;
     Buffer inputBuffer_;
     Buffer outputBuffer_;
@@ -31,7 +31,7 @@ private:
     std::function<void(spConnection)> writeCompleteCallback_;
 
 public:
-    Connection(EventLoop *loop, Socket *clientSocket);
+    Connection(EventLoop *loop, std::unique_ptr<Socket> clientSocket);
     ~Connection();
 
     string getClientIp() const;
