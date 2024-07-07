@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "TcpServer.h"
+#include "EchoServer.h"
 
 using namespace std;
 
@@ -12,9 +12,9 @@ int main(int argc, char const *argv[])
         exit(1);
     }
 
-    TcpServer *server = new TcpServer(argv[1], argv[2]);
+    EchoServer *server = new EchoServer(argv[1], argv[2]);
 
-    server->tcpServerStart();
+    server->start();
 
     return 0;
 }

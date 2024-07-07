@@ -17,6 +17,13 @@ private:
     Acceptor *acceptor_;
     std::map<int, Connection *> connMap_;
 
+    std::function<void(Socket *)> newConnectionCallback_;
+    std::function<void(Connection *)> closeConnectionCallback_;
+    std::function<void(Connection *)> errorConnectionCallback_;
+    std::function<void(Connection *, string)> onMessageCallback_;
+    std::function<void(Connection *)> sendCompleteCallback_;
+    std::function<void(EventLoop *)> epollTimeoutCallback_;
+
 public:
     TcpServer(const string &ip, const string &port);
     ~TcpServer();
@@ -31,6 +38,13 @@ public:
 
     void sendComplete(Connection *conn);
     void epollTimeout(EventLoop *loop);
+
+    void setNewConnectionCallback(const std::function<void(Socket *)> &cb);
+    void setCloseConnectionCallback(const std::function<void(Connection *)> &cb);
+    void setErrorConnectionCallback(const std::function<void(Connection *)> &cb);
+    void setOnMessageCallback(const std::function<void(Connection *, string)> &cb);
+    void setSendCompleteCallback(const std::function<void(Connection *)> &cb);
+    void setEpollTimeoutCallback(const std::function<void(EventLoop *)> &cb);
 };
 
 #endif

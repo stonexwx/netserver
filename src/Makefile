@@ -12,7 +12,8 @@ SERVER_SRC=tcpepoll.cpp \
 	TcpServer.cpp \
 	Acceptor.cpp \
 	Connection.cpp \
-	Buffer.cpp 
+	Buffer.cpp \
+	EchoServer.cpp 
 CLIENT_OBJ=$(CLIENT_SRC:.cpp=.o)
 SERVER_OBJ=$(SERVER_SRC:.cpp=.o)
 BUILD_DIR=../build
