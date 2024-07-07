@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <map>
+#include <memory>
 
 #include "EventLoop.h"
 #include "Acceptor.h"
@@ -14,8 +15,8 @@ class EventLoop;
 class TcpServer
 {
 private:
-    EventLoop *mainLoop_; // 主EventLoop
-    std::vector<EventLoop *> loops_;
+    std::unique_ptr<EventLoop> mainLoop_; // 主EventLoop
+    std::vector<std::unique_ptr<EventLoop>> loops_;
     Acceptor *acceptor_;
     std::map<int, spConnection> connMap_;
     ThreadPool *threadPool_;

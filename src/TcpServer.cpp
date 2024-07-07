@@ -1,8 +1,9 @@
 #include "TcpServer.h"
 
-TcpServer::TcpServer(const string &ip, const string &port, int treadNum) : threadNum_(treadNum)
+TcpServer::TcpServer(const string &ip, const string &port, int treadNum)
+    : threadNum_(treadNum), mainLoop_(new EventLoop())
 {
-    mainLoop_ = new EventLoop();
+
     mainLoop_->setTimeoutCallback(std::bind(&TcpServer::epollTimeout, this, std::placeholders::_1));
 
     acceptor_ = new Acceptor(mainLoop_, ip, port);
@@ -14,21 +15,16 @@ TcpServer::TcpServer(const string &ip, const string &port, int treadNum) : threa
 
     for (int i = 0; i < threadNum_; i++)
     {
-        loops_.push_back(new EventLoop);
+        loops_.emplace_back(new EventLoop);
         loops_[i]->setTimeoutCallback(std::bind(&TcpServer::epollTimeout, this, std::placeholders::_1));
-        threadPool_->addtask(std::bind(&EventLoop::run, loops_[i]));
+        threadPool_->addtask(std::bind(&EventLoop::run, loops_[i].get()));
     }
 }
 
 TcpServer::~TcpServer()
 {
     delete acceptor_;
-    delete mainLoop_;
 
-    for (auto loop : loops_)
-    {
-        delete loop;
-    }
     delete threadPool_;
 }
 
@@ -39,13 +35,7 @@ void TcpServer::tcpServerStart()
 
 void TcpServer::newConnection(std::unique_ptr<Socket> clientSocket)
 {
-    // Connection *conn_ = new Connection(mainLoop_, clientSocket);
     spConnection conn_(new Connection(loops_[connMap_.size() % threadNum_], std::move(clientSocket)));
-
-    // printf("accept client(fd=%d,ip=%s,port=%d) ok.\n",
-    //        conn_->getFd(),
-    //        conn_->getClientIp().c_str(),
-    //        conn_->getClientPort());
 
     conn_->setCloseCallback(std::bind(&TcpServer::closeConnection, this, std::placeholders::_1));
     conn_->setErrorCallback(std::bind(&TcpServer::errorConnection, this, std::placeholders::_1));

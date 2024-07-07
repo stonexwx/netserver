@@ -1,6 +1,6 @@
 #include "Acceptor.h"
 
-Acceptor::Acceptor(EventLoop *loop,
+Acceptor::Acceptor(std::unique_ptr<EventLoop> &loop,
                    const string &ip,
                    const string &port)
     : loop_(loop), acceptSocket_(createNonblockingOrDie()), acceptChannel_(loop_, acceptSocket_.getFd())

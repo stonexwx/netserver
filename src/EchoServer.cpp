@@ -40,7 +40,7 @@ void EchoServer::handleErrorConnection(spConnection conn)
 void EchoServer::onMessageInThreadPool(spConnection conn, string &data)
 {
     data = "reply:" + data;
-    sleep(2);
+
     conn->send(data.data(), data.size());
 }
 
