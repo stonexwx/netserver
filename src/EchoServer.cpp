@@ -37,14 +37,11 @@ void EchoServer::handleErrorConnection(Connection *conn)
     std::cout << "client(eventfd=" << conn->getFd() << ") disconnected." << std::endl;
 }
 
-void EchoServer::handleOnMessage(Connection *conn, string data)
+void EchoServer::handleOnMessage(Connection *conn, string &data)
 {
     data = "reply:" + data;
-    int len = data.size();
-    string tmpbuf;
-    tmpbuf.append((char *)&len, 4);
-    tmpbuf.append(data);
-    conn->send(tmpbuf.c_str(), len + 4);
+
+    conn->send(data.data(), data.size());
 }
 
 void EchoServer::handleSendComplete(Connection *conn)

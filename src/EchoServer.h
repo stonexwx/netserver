@@ -18,7 +18,7 @@ public:
 
     void handleCloseConnection(Connection *conn);
     void handleErrorConnection(Connection *conn);
-    void handleOnMessage(Connection *conn, string data);
+    void handleOnMessage(Connection *conn, string& data);
 
     void handleSendComplete(Connection *conn);
     void handleEpollTimeout(EventLoop *loop);

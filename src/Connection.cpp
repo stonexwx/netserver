@@ -35,7 +35,7 @@ int Connection::getFd() const
 
 void Connection::send(const char *data, size_t size)
 {
-    outputBuffer_.append(data, size);
+    outputBuffer_.appendWithHead(data, size);
     clientChannel_->enableWriting();
 }
 
@@ -134,7 +134,7 @@ void Connection::setErrorCallback(const std::function<void(Connection *)> &cb)
     errorCallback_ = cb;
 }
 
-void Connection::setOnMessageCallback(const std::function<void(Connection *, string)> &cb)
+void Connection::setOnMessageCallback(const std::function<void(Connection *, string &)> &cb)
 {
     onMessageCallback_ = cb;
 }

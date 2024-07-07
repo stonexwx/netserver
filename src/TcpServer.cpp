@@ -71,7 +71,7 @@ void TcpServer::errorConnection(Connection *conn)
     }
 }
 
-void TcpServer::onMessage(Connection *conn, string data)
+void TcpServer::onMessage(Connection *conn, string &data)
 {
     if (onMessageCallback_)
     {
@@ -112,7 +112,7 @@ void TcpServer::setErrorConnectionCallback(const std::function<void(Connection *
     errorConnectionCallback_ = cb;
 }
 
-void TcpServer::setOnMessageCallback(const std::function<void(Connection *, string)> &cb)
+void TcpServer::setOnMessageCallback(const std::function<void(Connection *, string &)> &cb)
 {
     onMessageCallback_ = cb;
 }
