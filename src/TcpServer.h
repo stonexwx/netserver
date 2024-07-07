@@ -28,6 +28,9 @@ public:
     void closeConnection(Connection *conn);
     void errorConnection(Connection *conn);
     void onMessage(Connection *conn, string data);
+
+    void sendComplete(Connection *conn);
+    void epollTimeout(EventLoop *loop);
 };
 
 #endif

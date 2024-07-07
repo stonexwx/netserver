@@ -65,7 +65,6 @@ vector<Channel *> Epoll::loop(int timeout)
     }
     if (nfds == 0)
     {
-        printf("epoll_wait() timeout.\n");
         return ret;
     }
     for (int i = 0; i < nfds; i++)

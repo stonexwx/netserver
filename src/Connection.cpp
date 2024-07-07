@@ -33,6 +33,12 @@ int Connection::getFd() const
     return clientSocket_->getFd();
 }
 
+void Connection::send(const char *data, size_t size)
+{
+    outputBuffer_.append(data, size);
+    clientChannel_->enableWriting();
+}
+
 void Connection::closeCallback()
 {
     printf("client(eventfd=%d) disconnected.\n", getFd());
@@ -104,22 +110,17 @@ void Connection::writeCallback()
         {
             outputBuffer_.erase(0, nwrite);
         }
-        else if (nwrite == -1 && errno == EINTR)
-        {
-            // continue;
-        }
-        else if (nwrite == -1 && ((errno == EAGAIN) || (errno == EWOULDBLOCK)))
+
+        if (outputBuffer_.size() == 0)
         {
             clientChannel_->disableWriting();
-        }
-        else
-        {
-            errorCallback();
+            writeCompleteCallback_(this);
         }
     }
     else
     {
         clientChannel_->disableWriting();
+        writeCompleteCallback_(this);
     }
 }
 
@@ -138,8 +139,7 @@ void Connection::setOnMessageCallback(const std::function<void(Connection *, str
     onMessageCallback_ = cb;
 }
 
-void Connection::send(const char *data, size_t size)
+void Connection::setWriteCompleteCallback(const std::function<void(Connection *)> &cb)
 {
-    outputBuffer_.append(data, size);
-    clientChannel_->enableWriting();
+    writeCompleteCallback_ = cb;
 }

@@ -12,12 +12,16 @@ private:
     /* data */
     Epoll *epoll_;
 
+    std::function<void(EventLoop *)> timeoutCallback_;
+
 public:
     EventLoop(/* args */);
     ~EventLoop();
 
     void run();
     void updateChannel(Channel *channel);
+
+    void setTimeoutCallback(const std::function<void(EventLoop *)> &cb);
 };
 
 #endif

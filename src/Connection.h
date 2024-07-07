@@ -22,6 +22,7 @@ private:
     std::function<void(Connection *)> closeCallback_;
     std::function<void(Connection *)> errorCallback_;
     std::function<void(Connection *, string)> onMessageCallback_;
+    std::function<void(Connection *)> writeCompleteCallback_;
 
 public:
     Connection(EventLoop *loop, Socket *clientSocket);
@@ -41,6 +42,7 @@ public:
     void setCloseCallback(const std::function<void(Connection *)> &cb);
     void setErrorCallback(const std::function<void(Connection *)> &cb);
     void setOnMessageCallback(const std::function<void(Connection *, string)> &cb);
+    void setWriteCompleteCallback(const std::function<void(Connection *)> &cb);
 };
 
 #endif
