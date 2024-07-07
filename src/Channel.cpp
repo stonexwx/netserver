@@ -42,6 +42,18 @@ void Channel::disableWriting()
     loop_->updateChannel(this);
 }
 
+void Channel::disableAllEvent()
+{
+    events_ = 0;
+    loop_->updateChannel(this);
+}
+
+void Channel::remove()
+{
+    disableAllEvent();
+    loop_->removeChannel(this);
+}
+
 void Channel::setInEpoll()
 {
     inepoll_ = true;
@@ -72,6 +84,7 @@ void Channel::handleEvent()
 
     if (getRevents() & EPOLLRDHUP) // 对方已关闭，有些系统检测不到，可以使用EPOLLIN，recv()返回0。
     {
+        remove();
         closeCallback_();
     } //  普通数据  带外数据
     else if (getRevents() & (EPOLLIN | EPOLLPRI)) // 接收缓冲区中有数据可以读。
@@ -84,6 +97,7 @@ void Channel::handleEvent()
     }
     else // 其它事件，都视为错误。
     {
+        remove();
         errorCallback_();
     }
 }

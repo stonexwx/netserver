@@ -24,10 +24,7 @@ TcpServer::~TcpServer()
 {
     delete acceptor_;
     delete mainLoop_;
-    for (auto iter = connMap_.begin(); iter != connMap_.end(); ++iter)
-    {
-        delete iter->second;
-    }
+
     for (auto loop : loops_)
     {
         delete loop;
@@ -43,7 +40,7 @@ void TcpServer::tcpServerStart()
 void TcpServer::newConnection(Socket *clientSocket)
 {
     // Connection *conn_ = new Connection(mainLoop_, clientSocket);
-    Connection *conn_ = new Connection(loops_[connMap_.size() % threadNum_], clientSocket);
+    spConnection conn_(new Connection(loops_[connMap_.size() % threadNum_], clientSocket));
 
     // printf("accept client(fd=%d,ip=%s,port=%d) ok.\n",
     //        conn_->getFd(),
@@ -62,7 +59,7 @@ void TcpServer::newConnection(Socket *clientSocket)
     }
 }
 
-void TcpServer::closeConnection(Connection *conn)
+void TcpServer::closeConnection(spConnection conn)
 {
     if (closeConnectionCallback_)
     {
@@ -71,17 +68,15 @@ void TcpServer::closeConnection(Connection *conn)
     auto iter = connMap_.find(conn->getFd());
     if (iter != connMap_.end())
     {
-        delete iter->second;
         connMap_.erase(iter);
     }
 }
 
-void TcpServer::errorConnection(Connection *conn)
+void TcpServer::errorConnection(spConnection conn)
 {
     auto iter = connMap_.find(conn->getFd());
     if (iter != connMap_.end())
     {
-        delete iter->second;
         connMap_.erase(iter);
     }
 
@@ -91,7 +86,7 @@ void TcpServer::errorConnection(Connection *conn)
     }
 }
 
-void TcpServer::onMessage(Connection *conn, string &data)
+void TcpServer::onMessage(spConnection conn, string &data)
 {
     if (onMessageCallback_)
     {
@@ -99,7 +94,7 @@ void TcpServer::onMessage(Connection *conn, string &data)
     }
 }
 
-void TcpServer::sendComplete(Connection *conn)
+void TcpServer::sendComplete(spConnection conn)
 {
 
     if (sendCompleteCallback_)
@@ -122,22 +117,22 @@ void TcpServer::setNewConnectionCallback(const std::function<void(Socket *)> &cb
     newConnectionCallback_ = cb;
 }
 
-void TcpServer::setCloseConnectionCallback(const std::function<void(Connection *)> &cb)
+void TcpServer::setCloseConnectionCallback(const std::function<void(spConnection)> &cb)
 {
     closeConnectionCallback_ = cb;
 }
 
-void TcpServer::setErrorConnectionCallback(const std::function<void(Connection *)> &cb)
+void TcpServer::setErrorConnectionCallback(const std::function<void(spConnection)> &cb)
 {
     errorConnectionCallback_ = cb;
 }
 
-void TcpServer::setOnMessageCallback(const std::function<void(Connection *, string &)> &cb)
+void TcpServer::setOnMessageCallback(const std::function<void(spConnection, string &)> &cb)
 {
     onMessageCallback_ = cb;
 }
 
-void TcpServer::setSendCompleteCallback(const std::function<void(Connection *)> &cb)
+void TcpServer::setSendCompleteCallback(const std::function<void(spConnection)> &cb)
 {
     sendCompleteCallback_ = cb;
 }

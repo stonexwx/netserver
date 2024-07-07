@@ -17,15 +17,15 @@ private:
     EventLoop *mainLoop_; // 主EventLoop
     std::vector<EventLoop *> loops_;
     Acceptor *acceptor_;
-    std::map<int, Connection *> connMap_;
+    std::map<int, spConnection> connMap_;
     ThreadPool *threadPool_;
     int threadNum_;
 
     std::function<void(Socket *)> newConnectionCallback_;
-    std::function<void(Connection *)> closeConnectionCallback_;
-    std::function<void(Connection *)> errorConnectionCallback_;
-    std::function<void(Connection *, string &)> onMessageCallback_;
-    std::function<void(Connection *)> sendCompleteCallback_;
+    std::function<void(spConnection)> closeConnectionCallback_;
+    std::function<void(spConnection)> errorConnectionCallback_;
+    std::function<void(spConnection, string &)> onMessageCallback_;
+    std::function<void(spConnection)> sendCompleteCallback_;
     std::function<void(EventLoop *)> epollTimeoutCallback_;
 
 public:
@@ -36,18 +36,18 @@ public:
 
     void newConnection(Socket *clientSocket);
 
-    void closeConnection(Connection *conn);
-    void errorConnection(Connection *conn);
-    void onMessage(Connection *conn, string &data);
+    void closeConnection(spConnection conn);
+    void errorConnection(spConnection conn);
+    void onMessage(spConnection conn, string &data);
 
-    void sendComplete(Connection *conn);
+    void sendComplete(spConnection conn);
     void epollTimeout(EventLoop *loop);
 
     void setNewConnectionCallback(const std::function<void(Socket *)> &cb);
-    void setCloseConnectionCallback(const std::function<void(Connection *)> &cb);
-    void setErrorConnectionCallback(const std::function<void(Connection *)> &cb);
-    void setOnMessageCallback(const std::function<void(Connection *, string &)> &cb);
-    void setSendCompleteCallback(const std::function<void(Connection *)> &cb);
+    void setCloseConnectionCallback(const std::function<void(spConnection)> &cb);
+    void setErrorConnectionCallback(const std::function<void(spConnection)> &cb);
+    void setOnMessageCallback(const std::function<void(spConnection, string &)> &cb);
+    void setSendCompleteCallback(const std::function<void(spConnection)> &cb);
     void setEpollTimeoutCallback(const std::function<void(EventLoop *)> &cb);
 };
 

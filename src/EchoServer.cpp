@@ -30,31 +30,31 @@ void EchoServer::handleNewConnection(Socket *clientSocket)
               << ") ok." << std::endl;
 }
 
-void EchoServer::handleCloseConnection(Connection *conn)
+void EchoServer::handleCloseConnection(spConnection conn)
+{
+    std::cout << "handleCloseConnection client(eventfd=" << conn->getFd() << ") disconnected." << std::endl;
+}
+
+void EchoServer::handleErrorConnection(spConnection conn)
 {
     std::cout << "client(eventfd=" << conn->getFd() << ") disconnected." << std::endl;
 }
 
-void EchoServer::handleErrorConnection(Connection *conn)
-{
-    std::cout << "client(eventfd=" << conn->getFd() << ") disconnected." << std::endl;
-}
-
-void EchoServer::onMessageInThreadPool(Connection *conn, string &data)
+void EchoServer::onMessageInThreadPool(spConnection conn, string &data)
 {
     data = "reply:" + data;
-
+    sleep(2);
     conn->send(data.data(), data.size());
 }
 
-void EchoServer::handleOnMessage(Connection *conn, string &data)
+void EchoServer::handleOnMessage(spConnection conn, string &data)
 {
 
     // 业务添加到工作线程里
     threadPool_.addtask(std::bind(&EchoServer::onMessageInThreadPool, this, conn, data));
 }
 
-void EchoServer::handleSendComplete(Connection *conn)
+void EchoServer::handleSendComplete(spConnection conn)
 {
     std::cout << "send complete." << std::endl;
 }

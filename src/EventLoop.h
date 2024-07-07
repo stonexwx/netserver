@@ -20,6 +20,7 @@ public:
 
     void run();
     void updateChannel(Channel *channel);
+    void removeChannel(Channel *channel);
 
     void setTimeoutCallback(const std::function<void(EventLoop *)> &cb);
 };

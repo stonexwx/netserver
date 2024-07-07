@@ -53,6 +53,19 @@ void Epoll::updateChannel(Channel *channel)
     }
 }
 
+void Epoll::removeChannel(Channel *channel)
+{
+    if (channel->inpoll())
+    {
+        if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, channel->getFd(), 0) == -1)
+        {
+            printf("%s:%s:%d,err:%s\n", __FILE__, __FUNCTION__, __LINE__, strerror(errno));
+            exit(1);
+        }
+        channel->setInEpoll();
+    }
+}
+
 vector<Channel *> Epoll::loop(int timeout)
 {
     vector<Channel *> ret;

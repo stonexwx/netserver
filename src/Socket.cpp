@@ -13,7 +13,6 @@ int createNonblockingOrDie()
 
 Socket::Socket(int fd) : sockfd_(fd)
 {
-    printf("Socket::Socket(int fd) : sockfd_(fd) : fd=%d\n", fd);
 }
 
 Socket::~Socket()

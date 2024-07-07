@@ -28,6 +28,7 @@ public:
 
     void addfd(int fd, uint32_t op);
     void updateChannel(Channel *channel);
+    void removeChannel(Channel *channel);
     // vector<struct epoll_event> loop(int timeout = -1);
     vector<Channel *> loop(int timeout = -1);
 };

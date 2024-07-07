@@ -65,6 +65,8 @@ int main(int argc, char *argv[])
             return -1;
         }
     }
+    sleep(1);
+    return 0;
     for (int ii = 0; ii < 100; ii++)
     {
         int len;

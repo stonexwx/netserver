@@ -31,6 +31,8 @@ public:
     void disableReading();             // 关闭读事件监听
     void enableWriting();              // 开启写事件监听
     void disableWriting();             // 关闭写事件监听
+    void disableAllEvent();            // 关闭所有事件监听
+    void remove();                     // 从epoll中移除
     void setInEpoll();                 // 设置是否在epoll中
     void setrevents(uint32_t revents); // 设置发生的事件
     bool inpoll() const;               // 是否在epoll中

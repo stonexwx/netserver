@@ -1,7 +1,7 @@
 #include "Connection.h"
 #include <sys/syscall.h>
 Connection::Connection(EventLoop *loop, Socket *clientSocket)
-    : loop_(loop), clientSocket_(clientSocket)
+    : loop_(loop), clientSocket_(clientSocket), disconnected_(false)
 {
     clientChannel_ = new Channel(loop_, clientSocket_->getFd());
     clientChannel_->enableReading();
@@ -35,15 +35,19 @@ int Connection::getFd() const
 
 void Connection::send(const char *data, size_t size)
 {
+    if (disconnected_)
+    {
+        return;
+    }
     outputBuffer_.appendWithHead(data, size);
     clientChannel_->enableWriting();
 }
 
 void Connection::closeCallback()
 {
-    printf("client(eventfd=%d) disconnected.\n", getFd());
-    close(getFd());
-    closeCallback_(this);
+    disconnected_ = true;
+    clientChannel_->remove();
+    closeCallback_(shared_from_this());
 }
 
 void Connection::onMessageCallback()
@@ -81,13 +85,14 @@ void Connection::onMessageCallback()
                 inputBuffer_.erase(0, len + 4);
                 printf("message(eventfd=%d): %s\n", getFd(), message.c_str());
 
-                onMessageCallback_(this, message);
+                onMessageCallback_(shared_from_this(), message);
             }
 
             break;
         }
         else if (nread == 0) // 客户端连接已断开。
         {
+
             closeCallback(); // 关闭回调函数
             break;
         }
@@ -96,50 +101,44 @@ void Connection::onMessageCallback()
 
 void Connection::errorCallback()
 {
-    printf("client(eventfd=%d) error.\n", getFd());
-    close(getFd());
-    errorCallback_(this);
+    disconnected_ = true;
+    clientChannel_->remove();
+    errorCallback_(shared_from_this());
 }
 
 void Connection::writeCallback()
 {
-    if (outputBuffer_.size() > 0)
-    {
-        ssize_t nwrite = ::send(getFd(), outputBuffer_.data(), outputBuffer_.size(), 0);
-        if (nwrite > 0)
-        {
-            outputBuffer_.erase(0, nwrite);
-        }
 
-        if (outputBuffer_.size() == 0)
-        {
-            clientChannel_->disableWriting();
-            writeCompleteCallback_(this);
-        }
-    }
-    else
+    ssize_t nwrite = ::send(getFd(), outputBuffer_.data(), outputBuffer_.size(), 0);
+    if (nwrite > 0)
     {
+        outputBuffer_.erase(0, nwrite);
+    }
+
+    if (outputBuffer_.size() == 0)
+    {
+
         clientChannel_->disableWriting();
-        writeCompleteCallback_(this);
+        writeCompleteCallback_(shared_from_this());
     }
 }
 
-void Connection::setCloseCallback(const std::function<void(Connection *)> &cb)
+void Connection::setCloseCallback(const std::function<void(spConnection)> &cb)
 {
     closeCallback_ = cb;
 }
 
-void Connection::setErrorCallback(const std::function<void(Connection *)> &cb)
+void Connection::setErrorCallback(const std::function<void(spConnection)> &cb)
 {
     errorCallback_ = cb;
 }
 
-void Connection::setOnMessageCallback(const std::function<void(Connection *, string &)> &cb)
+void Connection::setOnMessageCallback(const std::function<void(spConnection, string &)> &cb)
 {
     onMessageCallback_ = cb;
 }
 
-void Connection::setWriteCompleteCallback(const std::function<void(Connection *)> &cb)
+void Connection::setWriteCompleteCallback(const std::function<void(spConnection)> &cb)
 {
     writeCompleteCallback_ = cb;
 }

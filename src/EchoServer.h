@@ -19,14 +19,14 @@ public:
 
     void handleNewConnection(Socket *clientSocket);
 
-    void handleCloseConnection(Connection *conn);
-    void handleErrorConnection(Connection *conn);
-    void handleOnMessage(Connection *conn, string &data);
+    void handleCloseConnection(spConnection conn);
+    void handleErrorConnection(spConnection conn);
+    void handleOnMessage(spConnection conn, string &data);
 
-    void handleSendComplete(Connection *conn);
+    void handleSendComplete(spConnection conn);
     void handleEpollTimeout(EventLoop *loop);
 
-    void onMessageInThreadPool(Connection *conn, string &data);
+    void onMessageInThreadPool(spConnection conn, string &data);
 };
 
 #endif
