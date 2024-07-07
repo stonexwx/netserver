@@ -46,11 +46,13 @@ void Connection::onMessageCallback()
     {
         bzero(&buffer, sizeof(buffer));
         ssize_t nread = read(getFd(), buffer, sizeof(buffer)); // 这行代码用了read()，也可以用recv()，一样的，不要纠结。
-        if (nread > 0)                                         // 成功的读取到了数据。
+
+        if (nread > 0) // 成功的读取到了数据。
         {
             // 把接收到的报文内容原封不动的发回去。
             // printf("recv(eventfd=%d):%s\n", getFd(), buffer);
             // send(getFd(), buffer, strlen(buffer), 0);
+
             inputBuffer_.append(buffer, nread);
         }
         else if (nread == -1 && errno == EINTR) // 读取数据的时候被信号中断，继续读取。
@@ -59,7 +61,7 @@ void Connection::onMessageCallback()
         }
         else if (nread == -1 && ((errno == EAGAIN) || (errno == EWOULDBLOCK))) // 全部的数据已读取完毕。
         {
-            printf("recv(eventfd=%d):%s\n", getFd(), buffer);
+            printf("recv(eventfd=%d): %s\n", getFd(), inputBuffer_.data());
             outputBuffer_ = inputBuffer_;
             inputBuffer_.clear();
             send(getFd(), outputBuffer_.data(), outputBuffer_.size(), 0);

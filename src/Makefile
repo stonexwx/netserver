@@ -34,11 +34,13 @@ all: $(CLIENT_EXE) $(SERVER_EXE)
 $(CLIENT_EXE): $(CLIENT_OBJ)
 	mkdir -p $(BUILD_DIR)
 	$(CXX) $(CLIENT_OBJ) -o $@
+	rm -f $(CLIENT_OBJ)
 
 # 如何从 server.o 生成最终的 server 可执行文件
 $(SERVER_EXE): $(SERVER_OBJ)
 	mkdir -p $(BUILD_DIR)
 	$(CXX) $(SERVER_OBJ) -o $@
+	rm -f $(SERVER_OBJ)
 
 # 生成gdb可调式文件
 debug: CXXFLAGS += -g

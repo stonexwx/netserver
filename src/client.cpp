@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
         memset(buf, 0, sizeof(buf));
         printf("please input:");
         scanf("%s", buf);
+        // sprintf(buf, "hello world %d", ii);
 
         if (send(sockfd, buf, strlen(buf), 0) <= 0) // 把命令行输入的内容发送给服务端。
         {

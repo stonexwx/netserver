@@ -15,7 +15,7 @@ public:
     Buffer(/* args */);
     ~Buffer();
 
-    void append(const string &data, size_t size);
+    void append(const char *data, size_t size);
     size_t size();
     const char *data();
     void clear();

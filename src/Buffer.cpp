@@ -8,7 +8,7 @@ Buffer::~Buffer()
 {
 }
 
-void Buffer::append(const string &data, size_t size)
+void Buffer::append(const char *data, size_t size)
 {
     buffer_.append(data, size);
 }
