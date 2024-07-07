@@ -1,5 +1,5 @@
 #include "Connection.h"
-#include <sys/syscall.h>
+
 Connection::Connection(EventLoop *loop, std::unique_ptr<Socket> clientSocket)
     : loop_(loop), clientSocket_(std::move(clientSocket)), disconnected_(false), clientChannel_(new Channel(loop_, clientSocket_->getFd()))
 {
@@ -36,10 +36,25 @@ void Connection::send(const char *data, size_t size)
     {
         return;
     }
-    outputBuffer_.appendWithHead(data, size);
+
+    if (loop_->isInLoopThread()) // 如果在IO线程中，直接发送。
+    {
+        printf("send 在事件循环线程中\n");
+        sendin(string(data), size);
+    }
+    else
+    {
+        printf("send 不在事件循环线程中 data:%s\n", data);
+
+        loop_->queueInLoop(std::bind(&Connection::sendin, this, string(data), size));
+    }
+}
+void Connection::sendin(const string data, size_t size)
+{
+    printf("sendin data:%s\n", data.c_str());
+    outputBuffer_.appendWithHead(data.c_str(), size);
     clientChannel_->enableWriting();
 }
-
 void Connection::closeCallback()
 {
     disconnected_ = true;

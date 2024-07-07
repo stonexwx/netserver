@@ -12,7 +12,7 @@ int main(int argc, char const *argv[])
         exit(1);
     }
 
-    EchoServer *server = new EchoServer(argv[1], argv[2], 3, 3);
+    EchoServer *server = new EchoServer(argv[1], argv[2], 3, 0);
 
     server->start();
 

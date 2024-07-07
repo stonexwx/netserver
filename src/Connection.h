@@ -1,12 +1,14 @@
 #ifndef _CONNECTION_H
 #define _CONNECTION_H
 
+#include <memory>
+#include <atomic>
+#include <sys/syscall.h>
+
 #include "EventLoop.h"
 #include "Socket.h"
 #include "Channel.h"
 #include "Buffer.h"
-#include <memory>
-#include <atomic>
 
 class EventLoop;
 class Socket;
@@ -39,6 +41,7 @@ public:
     int getFd() const;
 
     void send(const char *data, size_t size);
+    void sendin(const string data, size_t size);
 
     void closeCallback();     // 关闭回调函数
     void errorCallback();     // 错误回调函数
