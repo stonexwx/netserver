@@ -62,5 +62,5 @@ void TcpServer::onMessage(Connection *conn, string data)
     char tmpbuf[1024];
     memset(tmpbuf, len, 4);
     memcpy(tmpbuf + 4, data.c_str(), len);
-    send(conn->getFd(), tmpbuf, len + 4, 0);
+    conn->send(tmpbuf, len + 4);
 }

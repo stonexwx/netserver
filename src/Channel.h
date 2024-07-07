@@ -20,7 +20,7 @@ private:
     function<void()> readCallback_;  // 读回调函数
     function<void()> closeCallback_; // 关闭回调函数
     function<void()> errorCallback_; // 错误回调函数
-
+    function<void()> writeCallback_; // 写回调函数
 public:
     Channel(EventLoop *loop, int fd);
     ~Channel();
@@ -28,6 +28,9 @@ public:
     int getFd() const;
     void useET();                      // 设置EPOLLET
     void enableReading();              // 开启读事件监听
+    void disableReading();             // 关闭读事件监听
+    void enableWriting();              // 开启写事件监听
+    void disableWriting();             // 关闭写事件监听
     void setInEpoll();                 // 设置是否在epoll中
     void setrevents(uint32_t revents); // 设置发生的事件
     bool inpoll() const;               // 是否在epoll中
@@ -40,6 +43,7 @@ public:
 
     void setCloseCallback(const function<void()> &cb); // 设置关闭回调函数
     void setErrorCallback(const function<void()> &cb); // 设置错误回调函数
+    void setWriteCallback(const function<void()> &cb); // 设置写回调函数
 };
 
 #endif

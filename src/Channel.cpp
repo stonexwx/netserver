@@ -24,6 +24,24 @@ void Channel::enableReading()
     loop_->updateChannel(this);
 }
 
+void Channel::disableReading()
+{
+    events_ &= ~EPOLLIN;
+    loop_->updateChannel(this);
+}
+
+void Channel::enableWriting()
+{
+    events_ |= EPOLLOUT;
+    loop_->updateChannel(this);
+}
+
+void Channel::disableWriting()
+{
+    events_ &= ~EPOLLOUT;
+    loop_->updateChannel(this);
+}
+
 void Channel::setInEpoll()
 {
     inepoll_ = true;
@@ -62,6 +80,7 @@ void Channel::handleEvent()
     }
     else if (getRevents() & EPOLLOUT) // 有数据需要写，暂时没有代码，以后再说。
     {
+        writeCallback_();
     }
     else // 其它事件，都视为错误。
     {
@@ -82,4 +101,9 @@ void Channel::setCloseCallback(const function<void()> &cb)
 void Channel::setErrorCallback(const function<void()> &cb)
 {
     errorCallback_ = cb;
+}
+
+void Channel::setWriteCallback(const function<void()> &cb)
+{
+    writeCallback_ = cb;
 }

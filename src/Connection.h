@@ -31,9 +31,12 @@ public:
     uint16_t getClientPort() const;
     int getFd() const;
 
+    void send(const char *data, size_t size);
+
     void closeCallback();     // 关闭回调函数
     void errorCallback();     // 错误回调函数
     void onMessageCallback(); // 读回调函数
+    void writeCallback();     // 写回调函数
 
     void setCloseCallback(const std::function<void(Connection *)> &cb);
     void setErrorCallback(const std::function<void(Connection *)> &cb);

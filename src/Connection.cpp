@@ -9,6 +9,7 @@ Connection::Connection(EventLoop *loop, Socket *clientSocket)
     clientChannel_->setReadCallback(std::bind(&Connection::onMessageCallback, this));
     clientChannel_->setCloseCallback(std::bind(&Connection::closeCallback, this));
     clientChannel_->setErrorCallback(std::bind(&Connection::errorCallback, this));
+    clientChannel_->setWriteCallback(std::bind(&Connection::writeCallback, this));
 }
 
 Connection::~Connection()
@@ -94,6 +95,34 @@ void Connection::errorCallback()
     errorCallback_(this);
 }
 
+void Connection::writeCallback()
+{
+    if (outputBuffer_.size() > 0)
+    {
+        ssize_t nwrite = ::send(getFd(), outputBuffer_.data(), outputBuffer_.size(), 0);
+        if (nwrite > 0)
+        {
+            outputBuffer_.erase(0, nwrite);
+        }
+        else if (nwrite == -1 && errno == EINTR)
+        {
+            // continue;
+        }
+        else if (nwrite == -1 && ((errno == EAGAIN) || (errno == EWOULDBLOCK)))
+        {
+            clientChannel_->disableWriting();
+        }
+        else
+        {
+            errorCallback();
+        }
+    }
+    else
+    {
+        clientChannel_->disableWriting();
+    }
+}
+
 void Connection::setCloseCallback(const std::function<void(Connection *)> &cb)
 {
     closeCallback_ = cb;
@@ -107,4 +136,10 @@ void Connection::setErrorCallback(const std::function<void(Connection *)> &cb)
 void Connection::setOnMessageCallback(const std::function<void(Connection *, string)> &cb)
 {
     onMessageCallback_ = cb;
+}
+
+void Connection::send(const char *data, size_t size)
+{
+    outputBuffer_.append(data, size);
+    clientChannel_->enableWriting();
 }
