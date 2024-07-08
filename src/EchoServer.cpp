@@ -66,7 +66,7 @@ void EchoServer::handleOnMessage(spConnection conn, string &data)
 
 void EchoServer::handleSendComplete(spConnection conn)
 {
-    std::cout << "send complete." << std::endl;
+    // std::cout << "send complete." << std::endl;
 }
 
 void EchoServer::handleEpollTimeout(EventLoop *loop)

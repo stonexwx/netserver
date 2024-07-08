@@ -9,7 +9,7 @@ EchoServer *server;
 
 void Stop(int signo)
 {
-    cout << "server stop" << endl;
+    // cout << "server stop" << endl;
     server->Stop();
     delete server;
     exit(0);
@@ -26,7 +26,7 @@ int main(int argc, char const *argv[])
     signal(SIGINT, Stop);
     signal(SIGTERM, Stop);
 
-    server = new EchoServer(argv[1], argv[2], 3, 3);
+    server = new EchoServer(argv[1], argv[2], 16, 0);
 
     server->start();
 

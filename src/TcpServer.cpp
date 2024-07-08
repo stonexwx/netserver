@@ -30,14 +30,14 @@ void TcpServer::tcpServerStart()
 void TcpServer::stop()
 {
     mainLoop_->stop();
-    printf("主事件循环已结束\n");
+    // printf("主事件循环已结束\n");
     for (auto &loop : loops_)
     {
         loop->stop();
     }
-    printf("从事件循环已结束\n");
+    // printf("从事件循环已结束\n");
     threadPool_.stop();
-    printf("线程池已结束\n");
+    // printf("线程池已结束\n");
 }
 
 void TcpServer::newConnection(std::unique_ptr<Socket> clientSocket)

@@ -1,0 +1,116 @@
+==51417== Memcheck, a memory error detector
+==51417== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==51417== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==51417== Command: ./echoServer 192.168.31.190 9009
+==51417== 
+==51417== Syscall param epoll_ctl(event) points to uninitialised byte(s)
+==51417==    at 0x4B86DE8: epoll_ctl (syscall-template.S:78)
+==51417==    by 0x10CC67: Epoll::updateChannel(Channel*) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x10EF8F: EventLoop::updateChannel(Channel*) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x10E13B: Channel::enableReading() (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x10EBCF: EventLoop::EventLoop(bool, int, int) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x116153: TcpServer::TcpServer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x12150F: EchoServer::EchoServer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, int) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x10C027: main (in /root/c++Project/netserver/build/echoServer)
+==51417==  Address 0x1ffefff9fc is on thread 1's stack
+==51417==  in frame #1, created by Epoll::updateChannel(Channel*) (???:)
+==51417==  Uninitialised value was created by a stack allocation
+==51417==    at 0x10CB74: Epoll::updateChannel(Channel*) (in /root/c++Project/netserver/build/echoServer)
+==51417== 
+handleNewConnection client(eventfd=37) connected. ip 192.168.31.180:48890
+==51417== Thread 5:
+==51417== Syscall param epoll_ctl(event) points to uninitialised byte(s)
+==51417==    at 0x4B86DE8: epoll_ctl (syscall-template.S:78)
+==51417==    by 0x10CBEF: Epoll::updateChannel(Channel*) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x10EF8F: EventLoop::updateChannel(Channel*) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x10E1B3: Channel::enableWriting() (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x11EEC7: Connection::sendin(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, unsigned long) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x11ED37: Connection::send(char const*, unsigned long) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x121BFB: EchoServer::onMessageInThreadPool(std::shared_ptr<Connection>, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x121C9B: EchoServer::handleOnMessage(std::shared_ptr<Connection>, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x1248D7: void std::__invoke_impl<void, void (EchoServer::*&)(std::shared_ptr<Connection>, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&), EchoServer*&, std::shared_ptr<Connection>, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&>(std::__invoke_memfun_deref, void (EchoServer::*&)(std::shared_ptr<Connection>, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&), EchoServer*&, std::shared_ptr<Connection>&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x124397: std::__invoke_result<void (EchoServer::*&)(std::shared_ptr<Connection>, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&), EchoServer*&, std::shared_ptr<Connection>, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&>::type std::__invoke<void (EchoServer::*&)(std::shared_ptr<Connection>, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&), EchoServer*&, std::shared_ptr<Connection>, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&>(void (EchoServer::*&)(std::shared_ptr<Connection>, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&), EchoServer*&, std::shared_ptr<Connection>&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x123E3B: void std::_Bind<void (EchoServer::*(EchoServer*, std::_Placeholder<1>, std::_Placeholder<2>))(std::shared_ptr<Connection>, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&)>::__call<void, std::shared_ptr<Connection>&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, 0ul, 1ul, 2ul>(std::tuple<std::shared_ptr<Connection>&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&>&&, std::_Index_tuple<0ul, 1ul, 2ul>) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x1234FF: void std::_Bind<void (EchoServer::*(EchoServer*, std::_Placeholder<1>, std::_Placeholder<2>))(std::shared_ptr<Connection>, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&)>::operator()<std::shared_ptr<Connection>, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, void>(std::shared_ptr<Connection>&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (in /root/c++Project/netserver/build/echoServer)
+==51417==  Address 0x70d491c is on thread 5's stack
+==51417==  in frame #1, created by Epoll::updateChannel(Channel*) (???:)
+==51417==  Uninitialised value was created by a stack allocation
+==51417==    at 0x10CB74: Epoll::updateChannel(Channel*) (in /root/c++Project/netserver/build/echoServer)
+==51417== 
+==51417== Syscall param epoll_ctl(event) points to uninitialised byte(s)
+==51417==    at 0x4B86DE8: epoll_ctl (syscall-template.S:78)
+==51417==    by 0x10CBEF: Epoll::updateChannel(Channel*) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x10EF8F: EventLoop::updateChannel(Channel*) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x10E1EF: Channel::disableWriting() (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x11F35B: Connection::writeCallback() (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x120E83: void std::__invoke_impl<void, void (Connection::*&)(), Connection*&>(std::__invoke_memfun_deref, void (Connection::*&)(), Connection*&) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x120B7B: std::__invoke_result<void (Connection::*&)(), Connection*&>::type std::__invoke<void (Connection::*&)(), Connection*&>(void (Connection::*&)(), Connection*&) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x12080F: void std::_Bind<void (Connection::*(Connection*))()>::__call<void, , 0ul>(std::tuple<>&&, std::_Index_tuple<0ul>) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x12023B: void std::_Bind<void (Connection::*(Connection*))()>::operator()<, void>() (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x11FCB7: std::_Function_handler<void (), std::_Bind<void (Connection::*(Connection*))()> >::_M_invoke(std::_Any_data const&) (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x10E5CB: std::function<void ()>::operator()() const (in /root/c++Project/netserver/build/echoServer)
+==51417==    by 0x10E387: Channel::handleEvent() (in /root/c++Project/netserver/build/echoServer)
+==51417==  Address 0x70d548c is on thread 5's stack
+==51417==  in frame #1, created by Epoll::updateChannel(Channel*) (???:)
+==51417==  Uninitialised value was created by a stack allocation
+==51417==    at 0x10CB74: Epoll::updateChannel(Channel*) (in /root/c++Project/netserver/build/echoServer)
+==51417== 
+handleNewConnection client(eventfd=38) connected. ip 192.168.31.180:48900
+handleNewConnection client(eventfd=39) connected. ip 192.168.31.180:48914
+handleNewConnection client(eventfd=40) connected. ip 192.168.31.180:48920
+handleNewConnection client(eventfd=41) connected. ip 192.168.31.180:48928
+handleNewConnection client(eventfd=42) connected. ip 192.168.31.180:48934
+handleNewConnection client(eventfd=43) connected. ip 192.168.31.180:48940
+handleNewConnection client(eventfd=44) connected. ip 192.168.31.180:48950
+handleNewConnection client(eventfd=45) connected. ip 192.168.31.180:48954
+handleNewConnection client(eventfd=46) connected. ip 192.168.31.180:48966
+handleNewConnection client(eventfd=47) connected. ip 192.168.31.180:48972
+handleNewConnection client(eventfd=48) connected. ip 192.168.31.180:48988
+handleNewConnection client(eventfd=49) connected. ip 192.168.31.180:49002
+handleNewConnection client(eventfd=50) connected. ip 192.168.31.180:49010
+handleNewConnection client(eventfd=51) connected. ip 192.168.31.180:49016
+handleNewConnection client(eventfd=52) connected. ip 192.168.31.180:49032
+handleNewConnection client(eventfd=53) connected. ip 192.168.31.180:49034
+handleNewConnection client(eventfd=54) connected. ip 192.168.31.180:49044
+handleNewConnection client(eventfd=55) connected. ip 192.168.31.180:49058
+handleNewConnection client(eventfd=56) connected. ip 192.168.31.180:49074
+handleNewConnection client(eventfd=57) connected. ip 192.168.31.180:49082
+handleNewConnection client(eventfd=58) connected. ip 192.168.31.180:49086
+handleNewConnection client(eventfd=59) connected. ip 192.168.31.180:49100
+handleNewConnection client(eventfd=60) connected. ip 192.168.31.180:49104
+handleNewConnection client(eventfd=61) connected. ip 192.168.31.180:49114
+handleNewConnection client(eventfd=62) connected. ip 192.168.31.180:49120
+handleNewConnection client(eventfd=63) connected. ip 192.168.31.180:49128
+handleNewConnection client(eventfd=64) connected. ip 192.168.31.180:49136
+handleNewConnection client(eventfd=65) connected. ip 192.168.31.180:49140
+handleNewConnection client(eventfd=66) connected. ip 192.168.31.180:49154
+handleNewConnection client(eventfd=67) connected. ip 192.168.31.180:49166
+handleNewConnection client(eventfd=68) connected. ip 192.168.31.180:49170
+handleNewConnection client(eventfd=69) connected. ip 192.168.31.180:49176
+handleNewConnection client(eventfd=70) connected. ip 192.168.31.180:49188
+handleNewConnection client(eventfd=71) connected. ip 192.168.31.180:49192
+handleNewConnection client(eventfd=72) connected. ip 192.168.31.180:49208
+handleNewConnection client(eventfd=73) connected. ip 192.168.31.180:49216
+handleNewConnection client(eventfd=74) connected. ip 192.168.31.180:49230
+handleNewConnection client(eventfd=75) connected. ip 192.168.31.180:49232
+handleNewConnection client(eventfd=76) connected. ip 192.168.31.180:49236
+handleNewConnection client(eventfd=77) connected. ip 192.168.31.180:49248
+handleNewConnection client(eventfd=78) connected. ip 192.168.31.180:49252
+handleNewConnection client(eventfd=79) connected. ip 192.168.31.180:49254
+handleNewConnection client(eventfd=80) connected. ip 192.168.31.180:49270
+handleNewConnection client(eventfd=81) connected. ip 192.168.31.180:49272
+handleNewConnection client(eventfd=82) connected. ip 192.168.31.180:49278
+handleNewConnection client(eventfd=83) connected. ip 192.168.31.180:49292
+handleNewConnection client(eventfd=84) connected. ip 192.168.31.180:49308
+handleNewConnection client(eventfd=85) connected. ip 192.168.31.180:49324
+handleNewConnection client(eventfd=86) connected. ip 192.168.31.180:49330
+工作线程已结束
+==51417== 
+==51417== HEAP SUMMARY:
+==51417==     in use at exit: 0 bytes in 0 blocks
+==51417==   total heap usage: 175,894 allocs, 175,894 frees, 4,838,856 bytes allocated
+==51417== 
+==51417== All heap blocks were freed -- no leaks are possible
+==51417== 
+==51417== For lists of detected and suppressed errors, rerun with: -s
+==51417== ERROR SUMMARY: 100850 errors from 3 contexts (suppressed: 0 from 0)

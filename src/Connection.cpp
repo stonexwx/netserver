@@ -1,7 +1,10 @@
 #include "Connection.h"
 
 Connection::Connection(EventLoop *loop, std::unique_ptr<Socket> clientSocket)
-    : loop_(loop), clientSocket_(std::move(clientSocket)), disconnected_(false), clientChannel_(new Channel(loop_, clientSocket_->getFd()))
+    : loop_(loop),
+      clientSocket_(std::move(clientSocket)),
+      disconnected_(false),
+      clientChannel_(new Channel(loop_, clientSocket_->getFd()))
 {
     clientChannel_->enableReading();
     clientChannel_->useET(); // 使用ET模式。
@@ -49,8 +52,8 @@ void Connection::send(const char *data, size_t size)
 }
 void Connection::sendin(const string data, size_t size)
 {
-    printf("sendin data:%s\n", data.c_str());
-    outputBuffer_.appendWithHead(data.c_str(), size);
+    // printf("sendin data:%s\n", data.c_str());
+    outputBuffer_.appendWithSep(data.c_str(), size);
     clientChannel_->enableWriting();
 }
 
@@ -85,17 +88,14 @@ void Connection::onMessageCallback()
         else if (nread == -1 && ((errno == EAGAIN) || (errno == EWOULDBLOCK))) // 全部的数据已读取完毕。
         {
             // printf("recv(eventfd=%d): %s\n", getFd(), inputBuffer_.data());
+            string message = "";
             while (true)
             {
-                int len;
-                memcpy(&len, inputBuffer_.data(), 4);
-                if (inputBuffer_.size() < len + 4)
+                if (inputBuffer_.pickMessage(message) == false)
                 {
                     break;
                 }
-                string message(inputBuffer_.data() + 4, len);
-                inputBuffer_.erase(0, len + 4);
-                printf("message(eventfd=%d): %s\n", getFd(), message.c_str());
+                // printf("message(eventfd=%d): %s\n", getFd(), message.c_str());
                 lastReceiveTime_ = Timestamp::now();
                 onMessageCallback_(shared_from_this(), message);
             }
