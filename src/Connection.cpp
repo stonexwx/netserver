@@ -13,7 +13,6 @@ Connection::Connection(EventLoop *loop, std::unique_ptr<Socket> clientSocket)
 
 Connection::~Connection()
 {
-    printf("Connection::~Connection()\n");
 }
 
 string Connection::getClientIp() const

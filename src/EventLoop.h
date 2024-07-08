@@ -8,6 +8,7 @@
 #include <queue>
 #include <mutex>
 #include <map>
+#include <atomic>
 
 #include "Epoll.h"
 #include "Channel.h"
@@ -31,9 +32,9 @@ private:
     pid_t threadId_;
 
     queue<std::function<void()>> taskqueu_;
-    std::mutex mutex_;
-    int wakeupFd_;
+    std::mutex taskqueuMutex_;
 
+    int wakeupFd_;
     std::unique_ptr<Channel> wakeupChannel_;
 
     int timerFd_;
@@ -41,12 +42,20 @@ private:
     bool mainloop_;
 
     std::map<int, spConnection> connMap_;
+    std::mutex connMutex_;
+
+    std::atomic_bool quit_;
+
+    int timetvl_;
+    int timeout_;
 
 public:
-    EventLoop(bool mainloop);
+    EventLoop(bool mainloop, int timetvl = 30, int timeout = 60);
     ~EventLoop();
 
     void run();
+    void stop();
+
     void updateChannel(Channel *channel);
     void removeChannel(Channel *channel);
 

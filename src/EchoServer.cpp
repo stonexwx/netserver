@@ -22,6 +22,13 @@ void EchoServer::start()
     server_.tcpServerStart();
 }
 
+void EchoServer::Stop()
+{
+    threadPool_.stop();
+    printf("工作线程已结束\n");
+    server_.stop();
+}
+
 void EchoServer::handleNewConnection(spConnection conn)
 {
     cout << "handleNewConnection client(eventfd=" << conn->getFd() << ") connected. ip " << conn->getClientIp() << ":" << conn->getClientPort() << endl;

@@ -11,7 +11,7 @@ TcpServer::TcpServer(const string &ip, const string &port, int treadNum)
 
     for (int i = 0; i < threadNum_; i++)
     {
-        loops_.emplace_back(new EventLoop(false));
+        loops_.emplace_back(new EventLoop(false, 5, 10));
         loops_[i]->setTimeoutCallback(std::bind(&TcpServer::epollTimeout, this, std::placeholders::_1));
         loops_[i]->settimercallback(std::bind(&TcpServer::removeconn, this, std::placeholders::_1));
         threadPool_.addtask(std::bind(&EventLoop::run, loops_[i].get()));
@@ -27,6 +27,19 @@ void TcpServer::tcpServerStart()
     mainLoop_->run();
 }
 
+void TcpServer::stop()
+{
+    mainLoop_->stop();
+    printf("主事件循环已结束\n");
+    for (auto &loop : loops_)
+    {
+        loop->stop();
+    }
+    printf("从事件循环已结束\n");
+    threadPool_.stop();
+    printf("线程池已结束\n");
+}
+
 void TcpServer::newConnection(std::unique_ptr<Socket> clientSocket)
 {
     spConnection conn_(new Connection(loops_[clientSocket->getFd() % threadNum_].get(), std::move(clientSocket)));
@@ -35,9 +48,13 @@ void TcpServer::newConnection(std::unique_ptr<Socket> clientSocket)
     conn_->setErrorCallback(std::bind(&TcpServer::errorConnection, this, std::placeholders::_1));
     conn_->setOnMessageCallback(std::bind(&TcpServer::onMessage, this, std::placeholders::_1, std::placeholders::_2));
     conn_->setWriteCompleteCallback(std::bind(&TcpServer::sendComplete, this, std::placeholders::_1));
-    connMap_[conn_->getFd()] = conn_;
-    loops_[conn_->getFd() % threadNum_]->addConnection(conn_);
 
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        connMap_[conn_->getFd()] = conn_;
+    }
+
+    loops_[conn_->getFd() % threadNum_]->addConnection(conn_);
     if (newConnectionCallback_)
     {
         newConnectionCallback_(conn_);
@@ -50,19 +67,25 @@ void TcpServer::closeConnection(spConnection conn)
     {
         closeConnectionCallback_(conn);
     }
-    auto iter = connMap_.find(conn->getFd());
-    if (iter != connMap_.end())
     {
-        connMap_.erase(iter);
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto iter = connMap_.find(conn->getFd());
+        if (iter != connMap_.end())
+        {
+            connMap_.erase(iter);
+        }
     }
 }
 
 void TcpServer::errorConnection(spConnection conn)
 {
-    auto iter = connMap_.find(conn->getFd());
-    if (iter != connMap_.end())
     {
-        connMap_.erase(iter);
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto iter = connMap_.find(conn->getFd());
+        if (iter != connMap_.end())
+        {
+            connMap_.erase(iter);
+        }
     }
 
     if (errorConnectionCallback_)
@@ -127,5 +150,8 @@ void TcpServer::setEpollTimeoutCallback(const std::function<void(EventLoop *)> &
 
 void TcpServer::removeconn(int fd)
 {
-    connMap_.erase(fd);
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        connMap_.erase(fd);
+    }
 }

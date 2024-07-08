@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <memory>
+#include <mutex>
 
 #include "EventLoop.h"
 #include "Acceptor.h"
@@ -21,6 +22,7 @@ private:
     std::map<int, spConnection> connMap_;
     int threadNum_;
     ThreadPool threadPool_;
+    std::mutex mutex_;
 
     std::function<void(spConnection)> newConnectionCallback_;
     std::function<void(spConnection)> closeConnectionCallback_;
@@ -34,6 +36,7 @@ public:
     ~TcpServer();
 
     void tcpServerStart();
+    void stop();
 
     void newConnection(std::unique_ptr<Socket> clientSocket);
 

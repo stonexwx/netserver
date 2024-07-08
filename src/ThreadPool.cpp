@@ -52,15 +52,20 @@ int ThreadPool::getSize()
     return threads_.size();
 }
 
-ThreadPool::~ThreadPool()
+void ThreadPool::stop()
 {
+    if (stop_)
+        return;
     stop_ = true;
-
     condition_.notify_all(); // 唤醒全部的线程。
-
     // 等待全部线程执行完任务后退出。
     for (std::thread &th : threads_)
         th.join();
+}
+
+ThreadPool::~ThreadPool()
+{
+    stop();
 }
 
 // g++ -o test ThreadPool.cpp -lpthread
