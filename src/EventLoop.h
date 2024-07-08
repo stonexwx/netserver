@@ -4,14 +4,21 @@
 #include <memory>
 #include <sys/syscall.h>
 #include <sys/eventfd.h>
+#include <sys/timerfd.h>
 #include <queue>
 #include <mutex>
+#include <map>
 
 #include "Epoll.h"
 #include "Channel.h"
+#include "Connection.h"
 
 class Channel;
 class Epoll;
+class Connection;
+
+using spConnection = std::shared_ptr<Connection>;
+
 class EventLoop
 {
 private:
@@ -28,8 +35,14 @@ private:
 
     std::unique_ptr<Channel> wakeupChannel_;
 
+    int timerFd_;
+    std::unique_ptr<Channel> timerChannel_;
+    bool mainloop_;
+
+    std::map<int, spConnection> connMap_;
+
 public:
-    EventLoop(/* args */);
+    EventLoop(bool mainloop);
     ~EventLoop();
 
     void run();
@@ -43,6 +56,10 @@ public:
     void queueInLoop(const std::function<void()> &cb);
     void wakeup();
     void handleWakeUp();
+
+    void handleTimeout();
+
+    void addConnection(spConnection conn);
 };
 
 #endif

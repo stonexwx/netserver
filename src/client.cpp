@@ -42,8 +42,8 @@ int main(int argc, char *argv[])
 
     printf("connect ok.\n");
     // printf("开始时间：%d",time(0));
-
-    for (int ii = 0; ii < 1; ii++)
+    sleep(1000);
+    for (int ii = 0; ii < 100; ii++)
     {
         // 从命令行输入内容。
         memset(buf, 0, sizeof(buf));
@@ -64,18 +64,11 @@ int main(int argc, char *argv[])
             close(sockfd);
             return -1;
         }
-    }
-
-    for (int ii = 0; ii < 1; ii++)
-    {
-        int len;
-
         recv(sockfd, &len, 4, 0);
         memset(buf, 0, sizeof(buf));
         recv(sockfd, buf, len, 0);
         printf("recv:%s\n", buf);
     }
 
-    sleep(100);
     // printf("结束时间：%d",time(0));
 }

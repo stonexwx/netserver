@@ -50,6 +50,8 @@ public:
     void setOnMessageCallback(const std::function<void(spConnection, string &)> &cb);
     void setSendCompleteCallback(const std::function<void(spConnection)> &cb);
     void setEpollTimeoutCallback(const std::function<void(EventLoop *)> &cb);
+
+    void removeconn(int fd);
 };
 
 #endif

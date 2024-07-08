@@ -14,7 +14,8 @@ SERVER_SRC=tcpepoll.cpp \
 	Connection.cpp \
 	Buffer.cpp \
 	EchoServer.cpp \
-	ThreadPool.cpp 
+	ThreadPool.cpp \
+	Timestamp.cpp 
 CLIENT_OBJ=$(CLIENT_SRC:.cpp=.o)
 SERVER_OBJ=$(SERVER_SRC:.cpp=.o)
 BUILD_DIR=../build
@@ -48,7 +49,7 @@ $(SERVER_EXE): $(SERVER_OBJ)
 debug: CXXFLAGS += -g
 debug: $(SERVER_OBJ)
 	mkdir -p $(Debug_DIR)
-	$(CXX) $(CXXFLAGS) $(SERVER_OBJ) -o $(Debug_EXE)
+	$(CXX) $(CXXFLAGS) $(SERVER_OBJ) -o $(Debug_EXE) -lpthread
 
 # 清理生成的文件
 clean:

@@ -9,6 +9,7 @@
 #include "Socket.h"
 #include "Channel.h"
 #include "Buffer.h"
+#include "Timestamp.h"
 
 class EventLoop;
 class Socket;
@@ -26,6 +27,7 @@ private:
     Buffer inputBuffer_;
     Buffer outputBuffer_;
     std::atomic_bool disconnected_;
+    Timestamp lastReceiveTime_;
 
     std::function<void(spConnection)> closeCallback_;
     std::function<void(spConnection)> errorCallback_;
@@ -42,6 +44,8 @@ public:
 
     void send(const char *data, size_t size);
     void sendin(const string data, size_t size);
+
+    bool timeout(time_t now, int seconds = 60);
 
     void closeCallback();     // 关闭回调函数
     void errorCallback();     // 错误回调函数

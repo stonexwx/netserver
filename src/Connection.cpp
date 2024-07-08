@@ -13,6 +13,7 @@ Connection::Connection(EventLoop *loop, std::unique_ptr<Socket> clientSocket)
 
 Connection::~Connection()
 {
+    printf("Connection::~Connection()\n");
 }
 
 string Connection::getClientIp() const
@@ -39,12 +40,10 @@ void Connection::send(const char *data, size_t size)
 
     if (loop_->isInLoopThread()) // 如果在IO线程中，直接发送。
     {
-        printf("send 在事件循环线程中\n");
         sendin(string(data), size);
     }
     else
     {
-        printf("send 不在事件循环线程中 data:%s\n", data);
 
         loop_->queueInLoop(std::bind(&Connection::sendin, this, string(data), size));
     }
@@ -55,6 +54,12 @@ void Connection::sendin(const string data, size_t size)
     outputBuffer_.appendWithHead(data.c_str(), size);
     clientChannel_->enableWriting();
 }
+
+bool Connection::timeout(time_t now, int seconds)
+{
+    return now - lastReceiveTime_.toint() > seconds;
+}
+
 void Connection::closeCallback()
 {
     disconnected_ = true;
@@ -72,10 +77,6 @@ void Connection::onMessageCallback()
 
         if (nread > 0) // 成功的读取到了数据。
         {
-            // 把接收到的报文内容原封不动的发回去。
-            // printf("recv(eventfd=%d):%s\n", getFd(), buffer);
-            // send(getFd(), buffer, strlen(buffer), 0);
-
             inputBuffer_.append(buffer, nread);
         }
         else if (nread == -1 && errno == EINTR) // 读取数据的时候被信号中断，继续读取。
@@ -96,7 +97,7 @@ void Connection::onMessageCallback()
                 string message(inputBuffer_.data() + 4, len);
                 inputBuffer_.erase(0, len + 4);
                 printf("message(eventfd=%d): %s\n", getFd(), message.c_str());
-
+                lastReceiveTime_ = Timestamp::now();
                 onMessageCallback_(shared_from_this(), message);
             }
 

@@ -1,7 +1,7 @@
 #include "TcpServer.h"
 
 TcpServer::TcpServer(const string &ip, const string &port, int treadNum)
-    : threadNum_(treadNum), mainLoop_(new EventLoop()), acceptor_(mainLoop_.get(), ip, port), threadPool_(threadNum_, "tcp server")
+    : threadNum_(treadNum), mainLoop_(new EventLoop(true)), acceptor_(mainLoop_.get(), ip, port), threadPool_(threadNum_, "tcp server")
 {
     mainLoop_->setTimeoutCallback(std::bind(&TcpServer::epollTimeout, this, std::placeholders::_1));
 
@@ -11,7 +11,7 @@ TcpServer::TcpServer(const string &ip, const string &port, int treadNum)
 
     for (int i = 0; i < threadNum_; i++)
     {
-        loops_.emplace_back(new EventLoop);
+        loops_.emplace_back(new EventLoop(false));
         loops_[i]->setTimeoutCallback(std::bind(&TcpServer::epollTimeout, this, std::placeholders::_1));
         threadPool_.addtask(std::bind(&EventLoop::run, loops_[i].get()));
     }
@@ -28,17 +28,17 @@ void TcpServer::tcpServerStart()
 
 void TcpServer::newConnection(std::unique_ptr<Socket> clientSocket)
 {
-    spConnection conn_(new Connection(loops_[connMap_.size() % threadNum_].get(), std::move(clientSocket)));
+    spConnection conn_(new Connection(loops_[clientSocket->getFd() % threadNum_].get(), std::move(clientSocket)));
 
     conn_->setCloseCallback(std::bind(&TcpServer::closeConnection, this, std::placeholders::_1));
     conn_->setErrorCallback(std::bind(&TcpServer::errorConnection, this, std::placeholders::_1));
     conn_->setOnMessageCallback(std::bind(&TcpServer::onMessage, this, std::placeholders::_1, std::placeholders::_2));
     conn_->setWriteCompleteCallback(std::bind(&TcpServer::sendComplete, this, std::placeholders::_1));
     connMap_[conn_->getFd()] = conn_;
+    loops_[conn_->getFd() % threadNum_]->addConnection(conn_);
 
     if (newConnectionCallback_)
     {
-
         newConnectionCallback_(conn_);
     }
 }
@@ -122,4 +122,9 @@ void TcpServer::setSendCompleteCallback(const std::function<void(spConnection)> 
 void TcpServer::setEpollTimeoutCallback(const std::function<void(EventLoop *)> &cb)
 {
     epollTimeoutCallback_ = cb;
+}
+
+void TcpServer::removeconn(int fd)
+{
+    connMap_.erase(fd);
 }
