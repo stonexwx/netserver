@@ -136,6 +136,7 @@ void EventLoop::handleTimeout()
         {
             std::lock_guard<std::mutex> gd(mutex_);
             connMap_.erase(key);
+            timercallback_(key);
         }
 
         printf("\n");
@@ -146,4 +147,9 @@ void EventLoop::addConnection(spConnection conn)
 {
     std::lock_guard<std::mutex> gd(mutex_);
     connMap_[conn->getFd()] = conn;
+}
+
+void EventLoop::settimercallback(std::function<void(int)> fn)
+{
+    timercallback_ = fn;
 }

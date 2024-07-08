@@ -13,6 +13,7 @@ TcpServer::TcpServer(const string &ip, const string &port, int treadNum)
     {
         loops_.emplace_back(new EventLoop(false));
         loops_[i]->setTimeoutCallback(std::bind(&TcpServer::epollTimeout, this, std::placeholders::_1));
+        loops_[i]->settimercallback(std::bind(&TcpServer::removeconn, this, std::placeholders::_1));
         threadPool_.addtask(std::bind(&EventLoop::run, loops_[i].get()));
     }
 }

@@ -26,6 +26,7 @@ private:
     std::unique_ptr<Epoll> epoll_;
 
     std::function<void(EventLoop *)> timeoutCallback_;
+    std::function<void(int)> timercallback_;
 
     pid_t threadId_;
 
@@ -60,6 +61,7 @@ public:
     void handleTimeout();
 
     void addConnection(spConnection conn);
+    void settimercallback(std::function<void(int)> fn);
 };
 
 #endif
