@@ -14,7 +14,7 @@ private:
     string buffer_;
     const uint16_t sep_; // 报文分割形式：0-无分割，1-4字节报文头，2-换行符
 public:
-    Buffer(uint16_t sep = 1);
+    Buffer(uint16_t sep = 0);
     ~Buffer();
 
     void append(const char *data, size_t size);

@@ -26,7 +26,7 @@ int main(int argc, char const *argv[])
     signal(SIGINT, Stop);
     signal(SIGTERM, Stop);
 
-    server = new EchoServer(argv[1], argv[2], 16, 0);
+    server = new EchoServer(argv[1], argv[2], 4, 0);
 
     server->start();
 
